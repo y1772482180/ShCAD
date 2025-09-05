@@ -30,7 +30,7 @@ public:
 	void setIsCenterThePlot(bool centerThePlot) { this->centerThePlot = centerThePlot; }
 	void setPrinterName(const QString& printerName) { this->printerName = printerName; }
 	void setWhatToPlot(WhatToPlot whatToPlot) { this->whatToPlot = whatToPlot; }
-	void setWhatToPlot(QString &whatToPlot);
+	void setWhatToPlot(const QString &whatToPlot);
 	void setWindowPrevXY(double windowPrevX, double windowPrevY) { this->windowPrevX = windowPrevX; this->windowPrevY = windowPrevY; }
 	void setWindowCurrentXY(double windowCurrentX, double windowCurrentY) { this->windowCurrentX = windowCurrentX; this->windowCurrentY = windowCurrentY; }
 

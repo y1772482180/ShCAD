@@ -2,7 +2,9 @@
 
 #ifndef _SHENTITY_H
 #define _SHENTITY_H
-
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
 #include "Private\ShEntityData.h"
 #include "Data\ShPropertyData.h"
 

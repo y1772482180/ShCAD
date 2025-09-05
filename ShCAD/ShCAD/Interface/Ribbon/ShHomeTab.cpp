@@ -18,7 +18,7 @@ ShHomeTab::ShHomeTab(ShChain *chain, const QString &title, QWidget *parent)
 	this->drawPanel = new ShDrawPanel(this, this, shGetLanValue_ui("Home/Draw"), 250);
 	this->addPanel(this->drawPanel);
 
-	this->modifyPanel = new ShModifyPanel(this, this, shGetLanValue_ui("Home/Modify"), 320);
+	this->modifyPanel = new ShModifyPanel(this, this, shGetLanValue_ui("Home/Modify"), 520);
 	this->addPanel(this->modifyPanel);
 
 	this->annotatePanel = new ShAnnotatePanel(this, this, shGetLanValue_ui("Home/Annotate"), 150);

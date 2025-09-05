@@ -21,7 +21,51 @@ public:
 	virtual void accept(ShVisitor *visitor);
 
 	virtual void updateChild();
+	virtual QJsonObject getJsonData() const {
+		QJsonObject json;
+		QJsonObject detailData;
 
+		// Ìî³ä firstOrigin
+		QJsonObject firstOriginPoint;
+		firstOriginPoint["x"] = this->data.firstOrigin.x;
+		firstOriginPoint["y"] = this->data.firstOrigin.y;
+		firstOriginPoint["z"] = this->data.firstOrigin.z;
+		detailData["firstOrigin"] = firstOriginPoint;
+
+		// Ìî³ä secondOrigin
+		QJsonObject secondOriginPoint;
+		secondOriginPoint["x"] = this->data.secondOrigin.x;
+		secondOriginPoint["y"] = this->data.secondOrigin.y;
+		secondOriginPoint["z"] = this->data.secondOrigin.z;
+		detailData["secondOrigin"] = secondOriginPoint;
+
+		// Ìî³ä firstDim
+		QJsonObject firstDimPoint;
+		firstDimPoint["x"] = this->data.firstDim.x;
+		firstDimPoint["y"] = this->data.firstDim.y;
+		firstDimPoint["z"] = this->data.firstDim.z;
+		detailData["firstDim"] = firstDimPoint;
+
+		// Ìî³ä secondDim
+		QJsonObject secondDimPoint;
+		secondDimPoint["x"] = this->data.secondDim.x;
+		secondDimPoint["y"] = this->data.secondDim.y;
+		secondDimPoint["z"] = this->data.secondDim.z;
+		detailData["secondDim"] = secondDimPoint;
+
+		// Ìî³ä text
+		QJsonObject textPoint;
+		textPoint["x"] = this->data.text.x;
+		textPoint["y"] = this->data.text.y;
+		textPoint["z"] = this->data.text.z;
+		detailData["text"] = textPoint;
+
+		// ÉèÖÃÀàĞÍÎª "DimLinear"
+		json["type"] = "DimLinear";
+		json["data"] = detailData;
+
+		return json;
+	}
 public:
 	void setData(const ShDimLinearData &data);
 	const ShDimLinearData& getData() { return this->data; }

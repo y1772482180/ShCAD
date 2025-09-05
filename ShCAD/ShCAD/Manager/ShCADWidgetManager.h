@@ -22,7 +22,7 @@ public:
 
 	void add(ShCADWidget *widget);
 	void remove(ShCADWidget *widget);
-
+	ShCADWidget* getLastWidget();
 	void setActivatedWidget(ShCADWidget *widget);
 
 };

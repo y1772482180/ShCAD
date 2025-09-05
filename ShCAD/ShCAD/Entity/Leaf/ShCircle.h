@@ -20,7 +20,23 @@ public:
 
 	virtual ShCircle* clone();
 	virtual void accept(ShVisitor *visitor);
+	inline const QJsonObject getJsonData() const {
+		QJsonObject json;
 
+		// Ìí¼ÓÔ²ĞÄ×ø±ê
+		QJsonObject centerPoint;
+		centerPoint["x"] = this->data.center.x;
+		centerPoint["y"] = this->data.center.y;
+		json["center"] = centerPoint;
+
+		// Ìí¼Ó°ë¾¶
+		json["radius"] = this->data.radius;
+		QJsonObject data;
+		data["type"] = "Circle";
+		data["data"] = json;
+		// ×ª»»Îª½ô´Õ¸ñÊ½µÄ JSON ×Ö·û´®
+		return data;
+	}
 public:
 	void setCenter(const ShPoint3d &center) { this->data.center = center; }
 	void setRadius(double radius) { this->data.radius = radius; }

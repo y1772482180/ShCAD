@@ -48,23 +48,6 @@ public:
 
 };
 
-class ShEllipseData : public ShEntityData {
-
-public:
-	ShPoint3d center;
-	double majorRadius;
-	double minorRadius;
-	double angle;
-
-public:
-	ShEllipseData();
-	ShEllipseData(const ShPoint3d& center, double majorRadius, double minorRadius, double angle);
-	ShEllipseData(const ShEllipseData& other);
-	~ShEllipseData();
-
-	ShEllipseData& operator=(const ShEllipseData& other);
-};
-
 class ShArcData : public ShEntityData {
 
 public:
@@ -80,6 +63,23 @@ public:
 	~ShArcData();
 
 	ShArcData& operator=(const ShArcData &other);
+};
+
+class ShEllipseData : public ShEntityData {
+
+public:
+	ShPoint3d center;
+	double majorRadius;
+	double minorRadius;
+	double angle;
+
+public:
+	ShEllipseData();
+	ShEllipseData(const ShPoint3d& center, double majorRadius, double minorRadius, double angle);
+	ShEllipseData(const ShEllipseData& other);
+	~ShEllipseData();
+
+	ShEllipseData& operator=(const ShEllipseData& other);
 };
 
 class ShDimLinearData : public ShEntityData {
@@ -171,7 +171,7 @@ public:
 	~ShDimArcLengthData();
 
 	ShDimArcLengthData& operator=(const ShDimArcLengthData &other);
-	
+
 };
 
 class ShDimAngularData : public ShEntityData {

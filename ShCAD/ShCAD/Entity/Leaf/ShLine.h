@@ -25,7 +25,23 @@ public:
 	virtual void setData(const ShLineData &data) { this->data = data; }
 	void setStart(const ShPoint3d &start) { this->data.start = start; }
 	virtual void setEnd(const ShPoint3d &end) { this->data.end = end; }
+	virtual const QJsonObject getJsonData() const {
+		QJsonObject json;
+		QJsonObject Detaildata;
+		QJsonObject startPoint;
+		startPoint["x"] = this->data.start.x;
+		startPoint["y"] = this->data.start.y;
+		Detaildata["start"] = startPoint;
+		QJsonObject endPoint;
+		endPoint["x"] = this->data.end.x;
+		endPoint["y"] = this->data.end.y;
+		Detaildata["end"] = endPoint;
+		json["type"] = "Line";
+		json["data"] = Detaildata;
 
+		return json;
+
+	}
 public:
 	virtual const ShLineData& getData() const { return this->data; }
 	virtual const ShPoint3d& getStart() const { return this->data.start; }

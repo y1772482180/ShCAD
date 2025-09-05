@@ -28,7 +28,7 @@ QString ShPlotManager::getWhatToPlotText() {
 	return str;
 }
 
-void ShPlotManager::setWhatToPlot(QString &whatToPlot) {
+void ShPlotManager::setWhatToPlot(const QString &whatToPlot) {
 
 	if (whatToPlot == "Display") {
 		this->whatToPlot = WhatToPlot::PlotDisplay;

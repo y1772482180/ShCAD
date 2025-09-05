@@ -19,6 +19,51 @@ public:
 	virtual void accept(ShVisitor *visitor);
 
 	virtual void updateChild();
+	virtual QJsonObject getJsonData() const {
+		QJsonObject json;
+		QJsonObject Detaildata;
+
+		// 野割 center
+		QJsonObject centerPoint;
+		centerPoint["x"] = this->data.center.x;
+		centerPoint["y"] = this->data.center.y;
+		centerPoint["z"] = this->data.center.z;
+		Detaildata["center"] = centerPoint;
+
+		// 野割 start
+		QJsonObject startPoint;
+		startPoint["x"] = this->data.start.x;
+		startPoint["y"] = this->data.start.y;
+		startPoint["z"] = this->data.start.z;
+		Detaildata["start"] = startPoint;
+
+		// 野割 end
+		QJsonObject endPoint;
+		endPoint["x"] = this->data.end.x;
+		endPoint["y"] = this->data.end.y;
+		endPoint["z"] = this->data.end.z;
+		Detaildata["end"] = endPoint;
+
+		// 野割 boundary
+		QJsonObject boundaryPoint;
+		boundaryPoint["x"] = this->data.boundary.x;
+		boundaryPoint["y"] = this->data.boundary.y;
+		boundaryPoint["z"] = this->data.boundary.z;
+		Detaildata["boundary"] = boundaryPoint;
+
+		// 野割 text
+		QJsonObject textPoint;
+		textPoint["x"] = this->data.text.x;
+		textPoint["y"] = this->data.text.y;
+		textPoint["z"] = this->data.text.z;
+		Detaildata["text"] = textPoint;
+
+		// 譜崔窃侏葎 "DimAngular"
+		json["type"] = "DimAngular";
+		json["data"] = Detaildata;
+
+		return json;
+	}
 
 public:
 	void setData(const ShDimAngularData &data);

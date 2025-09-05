@@ -17,6 +17,8 @@ class ShEmptyDrawingFileMenu : public ShAbstractMenu {
 
 private:
 	QAction *newAction;
+	QAction *readAction;
+
 
 public:
 	ShEmptyDrawingFileMenu(const QString &title, ShChain *chain, QWidget *parent = nullptr);
@@ -24,6 +26,7 @@ public:
 
 	private slots:
 	void newActionClicked();
+	void  readActionClicked();
 };
 
 class ShFileMenu : public ShAbstractMenu {
@@ -32,6 +35,7 @@ private:
 	QAction *newAction;
 	QAction *plotAction;
 	QAction *previewAction;
+	QAction *saveAction;
 
 public:
 	ShFileMenu(const QString &title, ShChain *chain, QWidget *parent = nullptr);
@@ -41,6 +45,7 @@ public:
 	void newActionClicked();
 	void plotActionClicked();
 	void previewActionClicked();
+	void saveActionClicked();
 };
 
 class ShEditMenu : public ShAbstractMenu {

@@ -13,6 +13,9 @@ ShCADWidgetManager::~ShCADWidgetManager() {
 
 
 }
+ShCADWidget* ShCADWidgetManager::getLastWidget() {
+	return this->list[this->nameIndex - 1];
+}
 
 ShCADWidget* ShCADWidgetManager::getActivatedWidget() {
 

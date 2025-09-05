@@ -28,7 +28,26 @@ public:
 	void setStartAngle(double startAngle) { this->data.startAngle = startAngle; }
 	void setEndAngle(double endAngle) { this->data.endAngle = endAngle; }
 	void setData(const ShArcData &data) { this->data = data; }
+	inline const QJsonObject getJsonData() const {
+		QJsonObject json;
 
+		// 添加圆心坐标
+		QJsonObject centerPoint;
+		centerPoint["x"] = this->data.center.x;
+		centerPoint["y"] = this->data.center.y;
+		json["center"] = centerPoint;
+
+		// 添加半径和角度
+		json["radius"] = this->data.radius;
+		json["startAngle"] = this->data.startAngle;
+		json["endAngle"] = this->data.endAngle;
+		QJsonObject data;
+		data["type"] = "Arc";
+		data["data"] = json;
+
+		// 转换为紧凑格式的 JSON 字符串
+		return data;
+	}
 public:
 	inline const ShPoint3d& getCenter() const { return this->data.center; }
 	inline double getRadius() const { return this->data.radius; }

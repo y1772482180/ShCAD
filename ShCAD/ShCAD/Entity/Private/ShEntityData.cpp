@@ -9,9 +9,7 @@ ShEntityData::ShEntityData(const ShEntityData &other) {
 
 }
 
-ShEntityData::~ShEntityData() {
-
-}
+ShEntityData::~ShEntityData() {}
 
 ShEntityData& ShEntityData::operator=(const ShEntityData &other) {
 
@@ -34,9 +32,7 @@ ShLineData::ShLineData(const ShLineData &other)
 
 }
 
-ShLineData::~ShLineData() {
-
-}
+ShLineData::~ShLineData() {}
 
 ShLineData& ShLineData::operator=(const ShLineData &other) {
 

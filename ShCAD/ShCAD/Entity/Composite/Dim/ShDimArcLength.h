@@ -19,7 +19,54 @@ public:
 	virtual void accept(ShVisitor *visitor);
 
 	virtual void updateChild();
+	virtual QJsonObject getJsonData() const {
+		QJsonObject json;
+		QJsonObject detailData;
 
+		// Ìî³ä center
+		QJsonObject centerPoint;
+		centerPoint["x"] = this->data.center.x;
+		centerPoint["y"] = this->data.center.y;
+		centerPoint["z"] = this->data.center.z;
+		detailData["center"] = centerPoint;
+
+		// Ìî³ä radius
+		detailData["radius"] = this->data.radius;
+
+		// Ìî³ä start
+		QJsonObject startPoint;
+		startPoint["x"] = this->data.start.x;
+		startPoint["y"] = this->data.start.y;
+		startPoint["z"] = this->data.start.z;
+		detailData["start"] = startPoint;
+
+		// Ìî³ä end
+		QJsonObject endPoint;
+		endPoint["x"] = this->data.end.x;
+		endPoint["y"] = this->data.end.y;
+		endPoint["z"] = this->data.end.z;
+		detailData["end"] = endPoint;
+
+		// Ìî³ä boundary
+		QJsonObject boundaryPoint;
+		boundaryPoint["x"] = this->data.boundary.x;
+		boundaryPoint["y"] = this->data.boundary.y;
+		boundaryPoint["z"] = this->data.boundary.z;
+		detailData["boundary"] = boundaryPoint;
+
+		// Ìî³ä text
+		QJsonObject textPoint;
+		textPoint["x"] = this->data.text.x;
+		textPoint["y"] = this->data.text.y;
+		textPoint["z"] = this->data.text.z;
+		detailData["text"] = textPoint;
+
+		// ÉèÖÃÀàĞÍÎª "DimArcLength"
+		json["type"] = "DimArcLength";
+		json["data"] = detailData;
+
+		return json;
+	}
 public:
 	void setData(const ShDimArcLengthData &data);
 	const ShDimArcLengthData& getData() const { return this->data; }

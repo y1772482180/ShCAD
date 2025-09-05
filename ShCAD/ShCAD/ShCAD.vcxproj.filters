@@ -139,27 +139,17 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_ShCAD.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
+    
     <ClCompile Include="Interface\ShCAD.cpp">
       <Filter>Interface</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ShCAD.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ShCAD.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="Interface\Dock\ShCommandDock.cpp">
       <Filter>Interface\Dock</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ShButton.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ShButton.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="Interface\Item\ShButton.cpp">
       <Filter>Interface\Item</Filter>
     </ClCompile>
@@ -181,33 +171,21 @@
     <ClCompile Include="Interface\Ribbon\ShRibbon.cpp">
       <Filter>Interface\Ribbon</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ShRibbonButton.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ShRibbonButton.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="Interface\Ribbon\Button\ShRibbonButton.cpp">
       <Filter>Interface\Ribbon\Button</Filter>
     </ClCompile>
     <ClCompile Include="Interface\Ribbon\ShRibbonMenu.cpp">
       <Filter>Interface\Ribbon</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ShHomeTab.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ShHomeTab.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="Interface\Ribbon\ShHomeTab.cpp">
       <Filter>Interface\Ribbon</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ShStatusBar.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ShStatusBar.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="Interface\StatusBar\ShStatusBar.cpp">
       <Filter>Interface\StatusBar</Filter>
     </ClCompile>
@@ -217,30 +195,22 @@
     <ClCompile Include="Interface\ToolBar\ShDrawToolBar.cpp">
       <Filter>Interface\ToolBar</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ShLayerToolBar.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
+    
     <ClCompile Include="Interface\ToolBar\ShLayerToolBar.cpp">
       <Filter>Interface\ToolBar</Filter>
     </ClCompile>
     <ClCompile Include="Interface\ToolBar\ShModifyToolBar.cpp">
       <Filter>Interface\ToolBar</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ShLayerToolBar.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
     <ClCompile Include="Interface\ToolBar\ShObjectSnapToolBar.cpp">
       <Filter>Interface\ToolBar</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ShPropertyToolBar.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
+    
     <ClCompile Include="Interface\ToolBar\ShPropertyToolBar.cpp">
       <Filter>Interface\ToolBar</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ShPropertyToolBar.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
     <ClCompile Include="Interface\ToolBar\ShToolBarContainer.cpp">
       <Filter>Interface\ToolBar</Filter>
     </ClCompile>
@@ -400,12 +370,8 @@
     <ClCompile Include="ActionHandler\Private\ShDecorateActionStrategy.cpp">
       <Filter>ActionHandler\Private</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ShStartupDialog.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ShStartupDialog.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="Interface\Dialog\ShStartupDialog.cpp">
       <Filter>Interface\Dialog</Filter>
     </ClCompile>
@@ -418,12 +384,8 @@
     <ClCompile Include="Data\ShColorList.cpp">
       <Filter>Data</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ShColorComboBox.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ShColorComboBox.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="Chain of Responsibility\ShChain.cpp">
       <Filter>Chain of Responsibility</Filter>
     </ClCompile>
@@ -457,15 +419,11 @@
     <ClCompile Include="Utility\ShLineStyleConverter.cpp">
       <Filter>Utility</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ShLineStyleComboBox.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
+    
     <ClCompile Include="Interface\Item\ShLineStyleComboBox.cpp">
       <Filter>Interface\Item</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ShLineStyleComboBox.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
     <ClCompile Include="Interface\ToolBar\ShQuickAccessToolBar.cpp">
       <Filter>Interface\ToolBar</Filter>
     </ClCompile>
@@ -481,24 +439,16 @@
     <ClCompile Include="Base\ShLayerTable.cpp">
       <Filter>Base</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ShLayerComboBox.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ShLayerComboBox.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="Interface\Item\ShLayerComboBox.cpp">
       <Filter>Interface\Item</Filter>
     </ClCompile>
     <ClCompile Include="UnRedo\ShLayerTransaction.cpp">
       <Filter>UnRedo</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ShLayerDialog.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ShLayerDialog.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="Interface\Dialog\ShLayerDialog.cpp">
       <Filter>Interface\Dialog</Filter>
     </ClCompile>
@@ -610,12 +560,8 @@
     <ClCompile Include="Interface\Dialog\ShPlotPreviewDialog.cpp">
       <Filter>Interface\Dialog</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ShPlotDialog.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ShPlotDialog.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="ActionHandler\ShSelectPlotAreaAction.cpp">
       <Filter>ActionHandler</Filter>
     </ClCompile>
@@ -664,12 +610,8 @@
     <ClCompile Include="ActionHandler\DrawAction\DrawDimAction\ShDrawDimAngularAction.cpp">
       <Filter>ActionHandler\DrawAction\DrawDimAction</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ShDimensionStyleComboBox.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ShDimensionStyleComboBox.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="Interface\Item\ShDimensionStyleComboBox.cpp">
       <Filter>Interface\Item</Filter>
     </ClCompile>
@@ -754,12 +696,8 @@
     <ClCompile Include="Interface\Dialog\ShCircleParamDialog.cpp">
       <Filter>Interface\Dialog</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ShCircleParamDialog.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ShDrawCircleAction.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="ActionHandler\ModifyAction\ShModifyBlockAction.cpp">
       <Filter>ActionHandler\ModifyAction</Filter>
     </ClCompile>
@@ -768,63 +706,63 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="ShCAD.qrc">
+    <QtRcc Include="ShCAD.qrc">
       <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Interface\ShCAD.h">
+    </QtRcc>
+    <QtMoc Include="Interface\ShCAD.h">
       <Filter>Interface</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Interface\Item\ShButton.h">
+    </QtMoc>
+    <QtMoc Include="Interface\Item\ShButton.h">
       <Filter>Interface\Item</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Interface\Ribbon\Button\ShRibbonButton.h">
+    </QtMoc>
+    <QtMoc Include="Interface\Ribbon\Button\ShRibbonButton.h">
       <Filter>Interface\Ribbon\Button</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Interface\Ribbon\ShHomeTab.h">
+    </QtMoc>
+    <QtMoc Include="Interface\Ribbon\ShHomeTab.h">
       <Filter>Interface\Ribbon</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Interface\StatusBar\ShStatusBar.h">
+    </QtMoc>
+    <QtMoc Include="Interface\StatusBar\ShStatusBar.h">
       <Filter>Interface\StatusBar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Interface\ToolBar\ShLayerToolBar.h">
+    </QtMoc>
+    <QtMoc Include="Interface\ToolBar\ShLayerToolBar.h">
       <Filter>Interface\ToolBar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Interface\ToolBar\ShPropertyToolBar.h">
+    </QtMoc>
+    <QtMoc Include="Interface\ToolBar\ShPropertyToolBar.h">
       <Filter>Interface\ToolBar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Interface\Dialog\ShStartupDialog.h">
+    </QtMoc>
+    <QtMoc Include="Interface\Dialog\ShStartupDialog.h">
       <Filter>Interface\Dialog</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Interface\Item\ShColorComboBox.h">
+    </QtMoc>
+    <QtMoc Include="Interface\Item\ShColorComboBox.h">
       <Filter>Interface\Item</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Interface\Item\ShLineStyleComboBox.h">
+    </QtMoc>
+    <QtMoc Include="Interface\Item\ShLineStyleComboBox.h">
       <Filter>Interface\Item</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Interface\Item\ShLayerComboBox.h">
+    </QtMoc>
+    <QtMoc Include="Interface\Item\ShLayerComboBox.h">
       <Filter>Interface\Item</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Interface\Dialog\ShLayerDialog.h">
+    </QtMoc>
+    <QtMoc Include="Interface\Dialog\ShLayerDialog.h">
       <Filter>Interface\Dialog</Filter>
-    </CustomBuild>
+    </QtMoc>
     <CustomBuild Include="ActionHandler\DecoratorAction\UnusualDecoratorAction\ShDisposableExtensionSnapAction.h">
       <Filter>ActionHandler\DecoratorAction\UnusualDecoratorAction</Filter>
     </CustomBuild>
-    <CustomBuild Include="Interface\Dialog\ShPlotDialog.h">
+    <QtMoc Include="Interface\Dialog\ShPlotDialog.h">
       <Filter>Interface\Dialog</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Interface\Item\ShDimensionStyleComboBox.h">
+    </QtMoc>
+    <QtMoc Include="Interface\Item\ShDimensionStyleComboBox.h">
       <Filter>Interface\Item</Filter>
-    </CustomBuild>
+    </QtMoc>
     <CustomBuild Include="Interface\ToolBar\ShDimensionToolBar.h">
       <Filter>Interface\ToolBar</Filter>
     </CustomBuild>
-    <CustomBuild Include="Interface\Dialog\ShCircleParamDialog.h">
+    <QtMoc Include="Interface\Dialog\ShCircleParamDialog.h">
       <Filter>Interface\Dialog</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ActionHandler\DrawAction\ShDrawCircleAction.h">
+    </QtMoc>
+    <QtMoc Include="ActionHandler\DrawAction\ShDrawCircleAction.h">
       <Filter>ActionHandler\DrawAction</Filter>
-    </CustomBuild>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Interface\Dock\ShCommandDock.h">

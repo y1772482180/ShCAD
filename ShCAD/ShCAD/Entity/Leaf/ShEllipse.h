@@ -26,6 +26,27 @@ public:
     void setMinorRadius(double minorRadius) { this->data.minorRadius = minorRadius; }
     void setAngle(double angle) { this->data.angle = angle; }
     void setData(const ShEllipseData& data) { this->data = data; }
+	inline const QJsonObject getJsonData() const {
+		QJsonObject json;
+
+		// 添加椭圆中心点坐标
+		QJsonObject centerPoint;
+		centerPoint["x"] = this->data.center.x;
+		centerPoint["y"] = this->data.center.y;
+		centerPoint["z"] = this->data.center.z;  // 如果是3D坐标
+		json["center"] = centerPoint;
+
+		// 添加椭圆参数
+		json["majorRadius"] = this->data.majorRadius;
+		json["minorRadius"] = this->data.minorRadius;
+		json["angle"] = this->data.angle;  // 旋转角度
+
+		QJsonObject data;
+		data["type"] = "Ellipse";
+		data["data"] = json;
+
+		return data;
+	}
 
 public:
     inline const ShPoint3d& getCenter() const { return this->data.center; }
