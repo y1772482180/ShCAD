@@ -6,6 +6,7 @@
 #include "Private\ShEntityData.h"
 #include "Data\ShPropertyData.h"
 
+
 //Composite Pattern, Visitor Pattern, Prototype Pattern
 
 class ShLayer;
@@ -18,6 +19,9 @@ protected:
 	ShPropertyData propertyData;
 	bool selected;
 	ShLayer *layer;
+	//ShEntity* farther = nullptr;
+	//vector<ShEntity*>father;
+	//unsigned int shEId = 0;
 
 public:
 	ShEntity();

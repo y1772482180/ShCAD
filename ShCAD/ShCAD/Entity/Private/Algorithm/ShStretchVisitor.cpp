@@ -6,6 +6,8 @@
 #include "Entity\Leaf\ShArc.h"
 #include "Entity\Leaf\ShPoint.h"
 #include "Entity\Leaf\ShDot.h"
+#include "Entity\Leaf/ShEllipse.h"
+#include "Entity\Leaf/ShBlock.h"
 #include "Entity\Composite\Dim\ShDimLinear.h"
 #include "Entity\Composite\Dim\ShDimAligned.h"
 #include "Entity\Composite\Dim\ShDimRadius.h"
@@ -800,6 +802,74 @@ void ShStretchVisitor::visit(ShConstructionLine *constructionLine) {
 	constructionLine->setData(data);
 }
 
+void ShStretchVisitor::visit(ShEllipse* ellipse) {
+	if (this->original == nullptr || !dynamic_cast<ShEllipse*>(this->original))
+		return;
+
+	if (!dynamic_cast<ShStretchLeafData*>(this->stretchData))
+		return;
+
+	ShStretchLeafData* stretchData = dynamic_cast<ShStretchLeafData*>(this->stretchData);
+	ShEllipse* original = dynamic_cast<ShEllipse*>(this->original);
+	ShEllipseData data = original->getData();
+
+	double disX = this->current.x - this->base.x;
+	double disY = this->current.y - this->base.y;
+
+	if (stretchData->stretchPoint == StretchPoint::StretchMove) {
+		// 移动整个椭圆
+		data.center.move(disX, disY);
+	}
+	else if (stretchData->stretchPoint == StretchPoint::StretchMajorAxis) {
+		// 拉伸长轴
+		double newMajorRadius = math::getDistance(data.center.x, data.center.y,
+			this->current.x, this->current.y);
+		data.majorRadius = newMajorRadius;
+	}
+	else if (stretchData->stretchPoint == StretchPoint::StretchMinorAxis) {
+		// 拉伸短轴
+		double newMinorRadius = math::getDistance(data.center.x, data.center.y,
+			this->current.x, this->current.y);
+		data.minorRadius = newMinorRadius;
+	}
+
+	ellipse->setData(data);
+}
+
+void ShStretchVisitor::visit(ShBlock* block) {
+	if (this->original == nullptr || !dynamic_cast<ShBlock*>(this->original))
+		return;
+
+	if (!dynamic_cast<ShStretchLeafData*>(this->stretchData))
+		return;
+
+	ShStretchLeafData* stretchData = dynamic_cast<ShStretchLeafData*>(this->stretchData);
+	ShBlock* original = dynamic_cast<ShBlock*>(this->original);
+
+	if (stretchData->stretchPoint == StretchPoint::StretchMove) {
+		// 计算鼠标移动的偏移量
+		double disX = this->current.x - this->base.x;
+		double disY = this->current.y - this->base.y;
+
+		// 计算新的基点位置
+		ShPoint3d originalBase = original->getBasePoint();
+		ShPoint3d newBasePoint = originalBase;
+		newBasePoint.move(disX, disY);
+		block->setBasePoint(newBasePoint);
+
+		// 移动块中的所有实体（保持相对位置不变）
+		const QList<ShEntity*>& entities = original->getEntities();
+		for (int i = 0; i < entities.size(); ++i) {
+			ShEntity* originalEntity = entities[i];
+			ShEntity* previewEntity = block->getEntities()[i];
+
+			ShStretchVisitor stretchVisitor(this->base, this->current);
+			stretchVisitor.setOriginal(originalEntity);
+			stretchVisitor.setStretchData(new ShStretchLeafData(StretchPoint::StretchMove));
+			previewEntity->accept(&stretchVisitor);
+		}
+	}
+}
 ///////////////////////////////////////////////////
 
 ShPossibleEntityToStretchFinder::ShPossibleEntityToStretchFinder(const ShPoint3d &point, bool &possible, ShStretchData* *stretchData)
@@ -1083,6 +1153,60 @@ void ShPossibleEntityToStretchFinder::visit(ShConstructionLine *constructionLine
 	}
 }
 
+void ShPossibleEntityToStretchFinder::visit(ShEllipse* ellipse) {
+	ShPoint3d center = ellipse->getCenter();
+	double majorRadius = ellipse->getMajorRadius();
+	double minorRadius = ellipse->getMinorRadius();
+	double angle = ellipse->getAngle();
+
+	// 计算旋转后的长轴和短轴端点
+	double radAngle = angle * 3.1415926535897 / 180.0;
+	double cosAngle = cos(radAngle);
+	double sinAngle = sin(radAngle);
+
+	// 长轴端点
+	ShPoint3d majorAxisPoint = {
+		center.x + majorRadius * cosAngle,
+		center.y + majorRadius * sinAngle
+	};
+
+	// 短轴端点
+	ShPoint3d minorAxisPoint = {
+		center.x - minorRadius * sinAngle,
+		center.y + minorRadius * cosAngle
+	};
+
+	if (this->point.isEqual(center)) {
+		*this->stretchData = new ShStretchLeafData(StretchPoint::StretchMove);
+		this->possible = true;
+	}
+	else if (this->point.isEqual(majorAxisPoint)) {
+		*this->stretchData = new ShStretchLeafData(StretchPoint::StretchMajorAxis);
+		this->possible = true;
+	}
+	else if (this->point.isEqual(minorAxisPoint)) {
+		*this->stretchData = new ShStretchLeafData(StretchPoint::StretchMinorAxis);
+		this->possible = true;
+	}
+}
+
+void ShPossibleEntityToStretchFinder::visit(ShBlock* block) {
+	// 检查是否点击了块的基点
+	if (this->point.isEqual(block->getBasePoint())) {
+		*this->stretchData = new ShStretchLeafData(StretchPoint::StretchMove);
+		this->possible = true;
+	}
+	else {
+		// 检查块中的每个实体
+		for (ShEntity* entity : block->getEntities()) {
+			ShPossibleEntityToStretchFinder finder(this->point, this->possible, this->stretchData);
+			entity->accept(&finder);
+			if (this->possible) {
+				break;
+			}
+		}
+	}
+}
 ////////////////////////////////////////////////////////////////
 
 
@@ -1152,6 +1276,14 @@ void ShStretchDataForMoveCreator::visit(ShDimAngular *dimAngular) {
 
 void ShStretchDataForMoveCreator::visit(ShConstructionLine *constructionLine) {
 
+	*this->stretchData = new ShStretchLeafData(StretchPoint::StretchMove);
+}
+
+void ShStretchDataForMoveCreator::visit(ShEllipse* ellipse) {
+	*this->stretchData = new ShStretchLeafData(StretchPoint::StretchMove);
+}
+
+void ShStretchDataForMoveCreator::visit(ShBlock* block) {
 	*this->stretchData = new ShStretchLeafData(StretchPoint::StretchMove);
 }
 
@@ -1438,6 +1570,45 @@ void ShStretchPointRectFinder::visit(ShConstructionLine *constructionLine) {
 
 	if (insideCount == 2)
 		stretchPoint = StretchPoint::StretchMove;
+
+	*this->stretchData = new ShStretchLeafData(stretchPoint);
+}
+
+void ShStretchPointRectFinder::visit(ShEllipse* ellipse) {
+	ShPoint3d center = ellipse->getCenter();
+	StretchPoint stretchPoint = StretchPoint::StretchNothing;
+
+	if (this->checkPointLiesInsideRect(center)) {
+		stretchPoint = StretchPoint::StretchMove;
+	}
+
+	*this->stretchData = new ShStretchLeafData(stretchPoint);
+}
+
+void ShStretchPointRectFinder::visit(ShBlock* block) {
+	StretchPoint stretchPoint = StretchPoint::StretchNothing;
+	int insideCount = 0;
+
+	// 检查基点是否在矩形内
+	if (this->checkPointLiesInsideRect(block->getBasePoint())) {
+		insideCount++;
+		stretchPoint = StretchPoint::StretchMove;
+	}
+
+	// 检查块中的每个实体
+	for (ShEntity* entity : block->getEntities()) {
+		ShStretchPointRectFinder finder(this->topLeft, this->bottomRight, this->stretchData);
+		entity->accept(&finder);
+
+		ShStretchLeafData* data = dynamic_cast<ShStretchLeafData*>(*this->stretchData);
+		if (data && data->stretchPoint != StretchPoint::StretchNothing) {
+			insideCount++;
+			stretchPoint = StretchPoint::StretchMove;
+		}
+
+		delete* this->stretchData;
+		*this->stretchData = nullptr;
+	}
 
 	*this->stretchData = new ShStretchLeafData(stretchPoint);
 }

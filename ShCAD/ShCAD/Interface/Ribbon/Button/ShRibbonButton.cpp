@@ -113,7 +113,41 @@ void ShRibbonCircleButton::threePointActionClicked() {
 	this->changeStrategy(new ShRibbonCircleButtonThreePointStrategy);
 	this->strategy->execute();
 }
+//////////////////////////////////////////////////////////////////////////////////////
+ShRibbonEllipseButton::ShRibbonEllipseButton(QWidget* parent)
+	: ShAbstractRibbonButtonWithText(parent) {
 
+	this->setTextDirection(South);
+	this->setText(shGetLanValue_ui("Draw/Ellipse"));
+	this->setIconSize(this->size());
+
+	this->strategy = new ShRibbonEllipseButtonCenterAxisStrategy;
+	this->setIcon(this->strategy->getIcon());
+	this->setToolTip(this->strategy->getToolTip());
+
+	QMenu* menu = new QMenu(this->popupButton);
+	menu->addAction(ShRibbonEllipseButtonCenterAxisStrategy::getIcon_(),
+		shGetLanValue_ui("Draw/Ellipse,Center,Axis"),
+		this, SLOT(centerAxisActionClicked()));
+	menu->addAction(ShRibbonEllipseButtonAxisEndStrategy::getIcon_(),
+		shGetLanValue_ui("Draw/Ellipse,Axis,End"),
+		this, SLOT(axisEndActionClicked()));
+
+	this->popupButton->setMenu(menu);
+}
+
+ShRibbonEllipseButton::~ShRibbonEllipseButton() {
+}
+
+void ShRibbonEllipseButton::centerAxisActionClicked() {
+	this->changeStrategy(new ShRibbonEllipseButtonCenterAxisStrategy);
+	this->strategy->execute();
+}
+
+void ShRibbonEllipseButton::axisEndActionClicked() {
+	this->changeStrategy(new ShRibbonEllipseButtonAxisEndStrategy);
+	this->strategy->execute();
+}
 //////////////////////////////////////////////////////////////////////////////////////
 
 ShRibbonArcButton::ShRibbonArcButton(QWidget *parent)

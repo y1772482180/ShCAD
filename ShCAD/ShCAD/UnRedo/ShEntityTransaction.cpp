@@ -9,6 +9,7 @@
 #include "Base\ShLayer.h"
 #include "Entity\Composite\Dim\ShDim.h"
 #include "Base\ShDimensionStyle.h"
+#include "Entity/Leaf/ShBlock.h"
 
 ShAddEntityTransaction::ShAddEntityTransaction(ShCADWidget *widget, const QString &transactionName)
 	:ShTransaction("Group " + transactionName), widget(widget), mustDeleteEntity(false) {
@@ -135,7 +136,49 @@ void ShRotateEntityTransaction::undo() {
 	this->widget->update(DrawType::DrawAll);
 	this->widget->captureImage();
 }
+//////////////////////////////////////////////////////////////////////
+ ShCreateBlockTransaction::ShCreateBlockTransaction(ShCADWidget *widget, ShBlock *block, const QLinkedList<ShEntity*> &originalEntities)
+: ShTransaction("Create Block"), widget(widget), block(block),
+originalEntities(originalEntities), mustDeleteBlock(false), mustDeleteOriginals(false) {
+}
 
+ShCreateBlockTransaction::~ShCreateBlockTransaction() {
+	if (this->mustDeleteBlock)
+		delete this->block;
+
+	if (this->mustDeleteOriginals) {
+		while (!this->originalEntities.isEmpty())
+			delete this->originalEntities.takeFirst();
+	}
+}
+
+void ShCreateBlockTransaction::redo() {
+	// 添加块到实体表
+	this->widget->getEntityTable().add(this->block);
+	this->mustDeleteBlock = false;
+
+	// 移除原始实体
+	for (ShEntity* entity : this->originalEntities) {
+		this->widget->getEntityTable().remove(entity);
+	}
+	this->mustDeleteOriginals = true;
+
+	this->widget->update((DrawType)(DrawType::DrawCaptureImage | DrawType::DrawAddedEntities));
+	this->widget->captureImage();
+}
+
+void ShCreateBlockTransaction::undo() {
+	// 移除块
+	this->widget->getEntityTable().remove(this->block);
+	this->mustDeleteBlock = true;
+
+	// 恢复原始实体
+	this->widget->getEntityTable().add(this->originalEntities);
+	this->mustDeleteOriginals = false;
+
+	this->widget->update((DrawType)(DrawType::DrawCaptureImage | DrawType::DrawAddedEntities));
+	this->widget->captureImage();
+}
 //////////////////////////////////////////////////////////////////////
 
 ShMirrorEntityTransaction::ShMirrorEntityTransaction(ShCADWidget *widget, const QLinkedList<ShEntity*> &list, const ShPoint3d &center, double angle)

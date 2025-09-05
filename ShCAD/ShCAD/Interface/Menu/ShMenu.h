@@ -77,7 +77,9 @@ private:
 	QAction *arcCenterStartEndAction;
 	QAction *arcCenterStartAngleAction;
 	QAction *arcCenterStartLengthAction;
-
+	QMenu* ellipseMenu;  // 新增椭圆菜单
+	QAction* ellipseCenterAxisAction;  // 中心轴方式
+	QAction* ellipseAxisEndAction;  // 轴端点方式
 public:
 	ShDrawMenu(const QString &title, ShChain *chain, QWidget *parent = nullptr);
 	~ShDrawMenu();
@@ -85,7 +87,7 @@ public:
 private:
 	void createCircleMenu();
 	void createArcMenu();
-
+	void createEllipseMenu();
 	private slots:
 	void lineActionClicked();
 	void circleCenterRadiusActionClicked();
@@ -106,6 +108,8 @@ private:
 	void arcCenterStartEndActionClicked();
 	void arcCenterStartAngleActionClicked();
 	void arcCenterStartLengthActionClicked();
+	void ellipseCenterAxisActionClicked();  // 中心轴方式点击
+	void ellipseAxisEndActionClicked();  // 轴端点方式点击
 };
 
 class ShModifyMenu : public ShAbstractMenu {

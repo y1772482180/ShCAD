@@ -124,7 +124,7 @@ ShDrawMenu::ShDrawMenu(const QString &title, ShChain *chain, QWidget *parent)
 	this->addAction(this->rectangleAction);
 
 	this->addSeparator();
-
+	//this->createEllipseMenu();  // ´´½¨ÍÖÔ²²Ëµ¥
 
 	this->createCircleMenu();
 

@@ -30,7 +30,7 @@ private:
 
 	virtual void visit(ShLine *line);
 	virtual void visit(ShArc *arc);
-
+	//virtual void visit(ShEllipse* ellipse);
 
 };
 
@@ -54,6 +54,7 @@ public:
 	virtual void visit(ShLine *line);
 	virtual void visit(ShCircle *circle);
 	virtual void visit(ShArc *arc);
+	//virtual void visit(ShEllipse* ellipse); // 添加椭圆支持
 
 };
 
@@ -99,6 +100,7 @@ private:
 	virtual void visit(ShDimArcLength *dimArcLength);
 	virtual void visit(ShDimAngular *dimAngular);
 	virtual void visit(ShConstructionLine *constructionLine);
+	//virtual void visit(ShEllipse* ellipse); // 添加椭圆支持
 
 	bool checkPossibleToExtend(ShLine *lineToExtend, ShEntityPartToExtend entityPartToExtend, const ShPoint3d &extensionPoint);
 	bool checkPossibleToExtend(ShLine *lineToExtend, ShEntityPartToExtend entityPartToExtend,
@@ -130,6 +132,7 @@ private:
 	virtual void visit(ShDimArcLength *dimArcLength);
 	virtual void visit(ShDimAngular *dimAngular);
 	virtual void visit(ShConstructionLine *constructionLine);
+	//virtual void visit(ShEllipse* ellipse); // 添加椭圆支持
 
 	bool checkPossibleToExtend(ShArc *arcToExtend, ShEntityPartToExtend entityPartToExtend, const ShPoint3d &extensionPoint);
 	bool checkPossibleToExtend(ShArc *arcToExtend, ShEntityPartToExtend entityPartToExtend,

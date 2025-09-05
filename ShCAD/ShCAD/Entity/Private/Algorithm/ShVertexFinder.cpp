@@ -6,6 +6,8 @@
 #include "Entity\Leaf\ShArc.h"
 #include "Entity\Leaf\ShPoint.h"
 #include "Entity\Leaf\ShDot.h"
+#include "Entity\Leaf/ShBlock.h"
+#include "Entity\Leaf/ShEllipse.h"
 #include "Entity\Composite\Dim\ShDimLinear.h"
 #include "Entity\Composite\Dim\ShDimAligned.h"
 #include "Entity\Composite\Dim\ShDimRadius.h"
@@ -13,6 +15,7 @@
 #include "Entity\Composite\Dim\ShDimArcLength.h"
 #include "Entity\Composite\Dim\ShDimAngular.h"
 #include "Entity\Leaf\ShConstructionLine.h"
+
 
 ShNearestVertexFinder::ShNearestVertexFinder(double x, double y, double zoomRate, VertexType &vertexType, ShPoint3d &vertexPoint, double tolerance)
 	:x(x), y(y), zoomRate(zoomRate), vertexType(vertexType), vertexPoint(vertexPoint), tolerance(tolerance) {
@@ -430,6 +433,84 @@ void ShNearestVertexFinder::visit(ShConstructionLine *constructionLine) {
 
 }
 
+void ShNearestVertexFinder::visit(ShBlock* block) {
+	// 块的顶点就是它的基点
+	ShPoint3d basePoint = block->getBasePoint();
+
+	if (this->isNear(this->x, this->y, basePoint, this->zoomRate, this->tolerance)) {
+		this->vertexType = VertexType::VertexCenter;  // 使用VertexCenter表示块的基点
+			this->vertexPoint = basePoint;
+			return;
+	}
+
+	// 检查是否在块中的任何实体上
+	const QList<ShEntity*>& entities = block->getEntities();
+		for (ShEntity* entity : entities) {
+			ShNearestVertexFinder tempFinder(this->x, this->y, this->zoomRate, this->vertexType, this->vertexPoint, this->tolerance);
+				entity->accept(&tempFinder);
+
+				if (this->vertexType != VertexType::VertexNothing) {
+					return;  // 找到顶点就返回
+				}
+		}
+
+	// 没有找到任何顶点
+	this->vertexType = VertexType::VertexNothing;
+}
+
+// 实现 ShNearestVertexFinder 的椭圆访问方法
+void ShNearestVertexFinder::visit(ShEllipse* ellipse) {
+	ShPoint3d center = ellipse->getCenter();
+	double majorRadius = ellipse->getMajorRadius();
+	double minorRadius = ellipse->getMinorRadius();
+	double angle = ellipse->getAngle();
+
+	// 检查中心点
+	if (this->isNear(this->x, this->y, center, this->zoomRate, this->tolerance)) {
+		this->vertexType = VertexType::VertexCenter;
+		this->vertexPoint = center;
+		return;
+	}
+
+	// 计算椭圆的四个主要顶点（考虑旋转角度）
+	double radAngle = math::degreeToRadian(angle);
+	double cosAngle = cos(radAngle);
+	double sinAngle = sin(radAngle);
+
+	// 四个主要顶点（未旋转时的坐标）
+	ShPoint3d points[4] = {
+		{center.x + majorRadius, center.y, 0},  // 右端点
+		{center.x, center.y + minorRadius, 0},  // 上端点
+		{center.x - majorRadius, center.y, 0},  // 左端点
+		{center.x, center.y - minorRadius, 0}   // 下端点
+	};
+
+	// 应用旋转
+	for (int i = 0; i < 4; i++) {
+		double x = points[i].x - center.x;
+		double y = points[i].y - center.y;
+		points[i].x = center.x + x * cosAngle - y * sinAngle;
+		points[i].y = center.y + x * sinAngle + y * cosAngle;
+
+		// 检查每个顶点
+		if (this->isNear(this->x, this->y, points[i], this->zoomRate, this->tolerance)) {
+			this->vertexType = static_cast<VertexType>(VertexType::VertexRight << i);
+			this->vertexPoint = points[i];
+			return;
+		}
+	}
+
+	// 检查是否在椭圆边界上
+	if (math::checkPointLiesOnEllipseBoundary(ShPoint3d(this->x, this->y), center,
+		majorRadius, minorRadius, angle, this->tolerance)) {
+		this->vertexType = VertexType::VertexOther;
+	}
+	else {
+		this->vertexType = VertexType::VertexNothing;
+	}
+}
+
+
 bool ShNearestVertexFinder::isNear(int x, int y, const ShPoint3d &point, double zoomRate, double tolerance) {
 
 	if (x >= point.x - (tolerance / zoomRate) &&
@@ -808,6 +889,77 @@ void PointAndVertexTypeMathchedEntityFinder::visit(ShDimAngular *dimAngular) {
 
 			this->matched = true;
 			return;
+		}
+	}
+
+	this->matched = false;
+}
+
+void PointAndVertexTypeMathchedEntityFinder::visit(ShBlock* block) {
+	// 只匹配块的基点
+	if ((this->vertexType & VertexType::VertexCenter) == VertexType::VertexCenter) {
+		if (this->mustMatchPoint == block->getBasePoint()) {
+			this->matched = true;
+			return;
+		}
+	}
+
+	// 检查块中的实体是否匹配
+	const QList<ShEntity*>& entities = block->getEntities();
+	for (ShEntity* entity : entities) {
+		PointAndVertexTypeMathchedEntityFinder tempFinder(this->mustMatchPoint, this->vertexType, this->matched);
+		entity->accept(&tempFinder);
+
+		if (this->matched) {
+			return;  // 找到匹配就返回
+		}
+	}
+
+	// 没有找到匹配
+	this->matched = false;
+}
+
+void PointAndVertexTypeMathchedEntityFinder::visit(ShEllipse* ellipse) {
+	ShPoint3d center = ellipse->getCenter();
+
+	// 检查中心点匹配
+	if ((this->vertexType & VertexType::VertexCenter) == VertexType::VertexCenter) {
+		if (this->mustMatchPoint == center) {
+			this->matched = true;
+			return;
+		}
+	}
+
+	// 检查四个主要顶点匹配
+	double majorRadius = ellipse->getMajorRadius();
+	double minorRadius = ellipse->getMinorRadius();
+	double angle = ellipse->getAngle();
+
+	double radAngle = math::degreeToRadian(angle);
+	double cosAngle = cos(radAngle);
+	double sinAngle = sin(radAngle);
+
+	ShPoint3d points[4] = {
+		{center.x + majorRadius, center.y, 0},
+		{center.x, center.y + minorRadius, 0},
+		{center.x - majorRadius, center.y, 0},
+		{center.x, center.y - minorRadius, 0}
+	};
+
+	for (int i = 0; i < 4; i++) {
+		// 应用旋转
+		double x = points[i].x - center.x;
+		double y = points[i].y - center.y;
+		points[i].x = center.x + x * cosAngle - y * sinAngle;
+		points[i].y = center.y + x * sinAngle + y * cosAngle;
+
+		// 检查顶点类型匹配
+		VertexType pointType = static_cast<VertexType>(VertexType::VertexRight << i);
+		if ((this->vertexType & pointType) == pointType) {
+			if (this->mustMatchPoint == points[i]) {
+				this->matched = true;
+				return;
+			}
 		}
 	}
 

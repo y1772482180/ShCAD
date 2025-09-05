@@ -28,6 +28,8 @@ public:
 	virtual void visit(ShDimArcLength *dimArcLength);
 	virtual void visit(ShDimAngular *dimAngular);
 	virtual void visit(ShConstructionLine *constructionLine);
+	virtual void visit(ShEllipse* ellipse); // 添加椭圆支持
+	virtual void visit(ShBlock* block);  // 添加对块的访问方法
 
 };
 
@@ -55,6 +57,8 @@ public:
 	virtual void visit(ShDimArcLength *dimArcLength);
 	virtual void visit(ShDimAngular *dimAngular);
 	virtual void visit(ShConstructionLine *constructionLine);
+	virtual void visit(ShEllipse* ellipse); // 添加椭圆支持
+	virtual void visit(ShBlock* block);  // 添加对块的访问方法
 
 private:
 	void convert(const ShPoint3d &point, ShPoint3d &converted);

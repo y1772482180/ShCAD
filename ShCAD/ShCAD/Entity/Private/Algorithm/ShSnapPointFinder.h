@@ -37,7 +37,8 @@ public:
 	virtual void visit(ShPoint *point);
 	virtual void visit(ShDot *dot);
 	virtual void visit(ShConstructionLine *constructionLine);
-
+	virtual void visit(ShEllipse* ellipse);  // 新增：椭圆支持
+	virtual void visit(ShBlock* block);  // 添加对块的访问方法
 };
 
 #endif //_SHSNAPPOINTFINDER_H

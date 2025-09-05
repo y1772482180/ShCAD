@@ -3,7 +3,7 @@
 #define _SHDRAWCIRCLEACTION_H
 
 #include "ShDrawAction.h"
-
+#include"Interface/Dialog/ShCircleParamDialog.h"
 class ShDrawCircleAction : public ShDrawAction {
 
 	friend class ShSubDrawCircleAction;
@@ -87,8 +87,12 @@ protected:
 ///////////////////////////////////////////////////////////////////////////////
 
 
-class ShSubDrawCircleAction_CenterRadius : public ShSubDrawCircleAction {
+class ShSubDrawCircleAction_CenterRadius :public QObject, public ShSubDrawCircleAction  {
+	Q_OBJECT  // 必须添加这个宏
 
+private:
+	ShCircleParamDialog* dialog; // 添加对话框指针
+	bool useDialog; // 标记是否使用对话框输入
 public:
 	ShSubDrawCircleAction_CenterRadius(ShDrawCircleAction *drawCircleAction, ShCADWidget *widget);
 	~ShSubDrawCircleAction_CenterRadius();
@@ -99,7 +103,9 @@ public:
 
 	virtual void invalidate(ShPoint3d &point);
 	virtual void trigger(const ShPoint3d &point);
-
+private slots:
+	void handleDialogCenterConfirmed(); // 处理圆心确认
+	void handleDialogFinished(int result); // 处理对话框完成
 };
 
 

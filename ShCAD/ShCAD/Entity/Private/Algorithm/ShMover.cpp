@@ -5,6 +5,7 @@
 #include "Entity\Leaf\ShArc.h"
 #include "Entity\Leaf\ShPoint.h"
 #include "Entity\Leaf\ShDot.h"
+#include "Entity\Leaf\ShEllipse.h" // 添加椭圆头文件
 #include "Entity\Composite\Dim\ShDimLinear.h"
 #include "Entity\Composite\Dim\ShDimAligned.h"
 #include "Entity\Composite\Dim\ShDimRadius.h"
@@ -12,7 +13,7 @@
 #include "Entity\Composite\Dim\ShDimArcLength.h"
 #include "Entity\Composite\Dim\ShDimAngular.h"
 #include "Entity\Leaf\ShConstructionLine.h"
-
+#include "Entity\leaf/ShBlock.h"  // 添加块的头文件
 ShMover::ShMover(double disX, double disY)
 	:disX(disX), disY(disY) {
 
@@ -70,6 +71,11 @@ void ShMover::visit(ShDot *dot) {
 	dot->setPosition(position);
 }
 
+void ShMover::visit(ShEllipse* ellipse) {
+	ShEllipseData data = ellipse->getData();
+	data.center.move(this->disX, this->disY);
+	ellipse->setData(data);
+}
 void ShMover::visit(ShDimLinear *dimLinear) {
 
 	ShDimLinearData data = dimLinear->getData();
@@ -157,6 +163,19 @@ void ShMover::visit(ShConstructionLine *constructionLine) {
 	constructionLine->setEnd(end);
 }
 
+void ShMover::visit(ShBlock* block) {
+	// 移动块的基点
+	ShPoint3d basePoint = block->getBasePoint();
+	basePoint.move(this->disX, this->disY);
+	block->setBasePoint(basePoint);
+
+	// 移动块中的所有实体
+	const QList<ShEntity*>& entities = block->getEntities();
+	for (ShEntity* entity : entities) {
+		entity->accept(this);
+	}
+}
+
 ////////////////////////////////////////////////////////////////
 
 ShMoverByAxis::ShMoverByAxis(const ShScrollPosition &scroll, const ShPoint3d &prevCenter, const ShPoint3d &currentCenter, double zoomRate)
@@ -212,6 +231,12 @@ void ShMoverByAxis::visit(ShDot *dot) {
 	this->convert(position, position);
 
 	dot->setPosition(position);
+}
+
+void ShMoverByAxis::visit(ShEllipse* ellipse) {
+	ShEllipseData data = ellipse->getData();
+	this->convert(data.center, data.center);
+	ellipse->setData(data);
 }
 
 void ShMoverByAxis::visit(ShDimLinear *dimLinear) {
@@ -308,4 +333,17 @@ void ShMoverByAxis::convert(const ShPoint3d &point, ShPoint3d &converted) {
 
 	converted.x = (temp.x + this->scroll.horizontal - (this->currentCenter.x*this->zoomRate)) / this->zoomRate;
 	converted.y = (-1 * (temp.y + this->scroll.vertical - (this->currentCenter.y*this->zoomRate))) / this->zoomRate;
+}
+
+void ShMoverByAxis::visit(ShBlock* block) {
+	// 转换块的基点
+	ShPoint3d basePoint = block->getBasePoint();
+	this->convert(basePoint, basePoint);
+	block->setBasePoint(basePoint);
+
+	// 转换块中的所有实体
+	const QList<ShEntity*>& entities = block->getEntities();
+	for (ShEntity* entity : entities) {
+		entity->accept(this);
+	}
 }

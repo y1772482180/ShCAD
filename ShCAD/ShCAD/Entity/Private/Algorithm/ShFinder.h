@@ -25,6 +25,7 @@ public:
 	virtual void visit(ShLine *line);
 	virtual void visit(ShCircle *circle);
 	virtual void visit(ShArc *arc);
+	virtual void visit(ShEllipse* ellipse); // 添加椭圆支持
 	virtual void visit(ShPoint *point);
 	virtual void visit(ShDot *dot);
 	virtual void visit(ShDimLinear *dimLinear);
@@ -34,6 +35,7 @@ public:
 	virtual void visit(ShDimArcLength *dimArcLength);
 	virtual void visit(ShDimAngular *dimAngular);
 	virtual void visit(ShConstructionLine *constructionLine);
+	virtual void visit(ShBlock* block);  // 新增块访问方法
 
 private:
 	void visitDim(ShDim *dim);
@@ -72,6 +74,8 @@ public:
 	virtual void visit(ShDimArcLength *dimArcLength);
 	virtual void visit(ShDimAngular *dimAngular);
 	virtual void visit(ShConstructionLine *constructionLine);
+	virtual void visit(ShEllipse* ellipse); // 添加椭圆支持
+	virtual void visit(ShBlock* block);  // 新增块访问方法
 
 private:
 	void visitDim(ShDim *dim);

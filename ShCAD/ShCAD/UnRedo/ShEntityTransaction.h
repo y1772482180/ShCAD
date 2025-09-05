@@ -12,6 +12,7 @@ class ShEntity;
 class ShLayer;
 class ShDimensionStyle;
 class ShDim;
+class ShBlock;
 
 class ShAddEntityTransaction : public ShTransaction {
 
@@ -64,6 +65,22 @@ public:
 	virtual void redo();
 	virtual void undo();
 
+};
+
+class ShCreateBlockTransaction : public ShTransaction {
+private:
+	ShCADWidget* widget;
+	ShBlock* block;
+	QLinkedList<ShEntity*> originalEntities;
+	bool mustDeleteBlock;
+	bool mustDeleteOriginals;
+
+public:
+	ShCreateBlockTransaction(ShCADWidget* widget, ShBlock* block, const QLinkedList<ShEntity*>& originalEntities);
+	~ShCreateBlockTransaction();
+
+	virtual void redo();
+	virtual void undo();
 };
 
 class ShMirrorEntityTransaction : public ShTransaction {

@@ -57,6 +57,18 @@ public:
 
 };
 
+class ShRibbonEllipseButton : public ShAbstractRibbonButtonWithText {
+	Q_OBJECT
+
+public:
+	ShRibbonEllipseButton(QWidget* parent = nullptr);
+	~ShRibbonEllipseButton();
+
+private slots:
+	void centerAxisActionClicked();
+	void axisEndActionClicked();
+};
+
 class ShRibbonArcButton : public ShAbstractRibbonButtonWithText {
 
 	Q_OBJECT

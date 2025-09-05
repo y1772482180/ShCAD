@@ -7,6 +7,8 @@
 #include "Entity\Leaf\ShPoint.h"
 #include "Entity\Leaf\ShDot.h"
 #include "Base\ShPointStyle.h"
+#include "Entity\Leaf\ShEllipse.h" 
+#include "Entity/Leaf/ShBlock.h"
 #include "Entity\Composite\Dim\ShDimLinear.h"
 #include "Entity\Composite\Dim\ShDimAligned.h"
 #include "Entity\Composite\Dim\ShDimRadius.h"
@@ -53,7 +55,22 @@ void ShFinder::visit(ShArc *arc) {
 	if (math::checkPointLiesOnArcBoundary(ShPoint3d(this->x, this->y), data.center, data.radius, data.startAngle, data.endAngle, tolerance) == true)
 		*this->foundEntity = arc;
 }
+void ShFinder::visit(ShEllipse* ellipse) {
+	double tolerance = this->tolerance / this->zoomRate;
+	ShEllipseData data = ellipse->getData();
 
+	// 实现椭圆边界点检测
+	if (math::checkPointLiesOnEllipseBoundary(
+		ShPoint3d(this->x, this->y),
+		data.center,
+		data.majorRadius,
+		data.minorRadius,
+		data.angle,
+		tolerance) == true) {
+
+		*this->foundEntity = ellipse;
+	}
+}
 void ShFinder::visit(ShPoint *point) {
 
 	QList<ShEntity*> list;
@@ -129,6 +146,21 @@ void ShFinder::visit(ShConstructionLine *constructionLine) {
 		*this->foundEntity = constructionLine;
 }
 
+// 添加ShFinder的visit(ShBlock*)实现
+void ShFinder::visit(ShBlock* block) {
+	ShEntity* foundEntity = nullptr;
+	ShFinder visitor(this->x, this->y, this->zoomRate, &foundEntity, this->tolerance);
+
+	// 递归检查块中的每个实体
+	for (ShEntity* entity : block->getEntities()) {
+		entity->accept(&visitor);
+		if (foundEntity != nullptr) {
+			*this->foundEntity = block;
+			break;
+		}
+	}
+}
+
 void ShFinder::visitDim(ShDim *dim) {
 
 	ShEntity *foundEntity = nullptr;
@@ -194,7 +226,66 @@ void ShRectFinder::visit(ShLine *line) {
 		}
 	}
 }
+void ShRectFinder::visit(ShEllipse* ellipse) {
+	ShEllipseData data = ellipse->getData();
 
+	if (this->findMethod == FindMethod::AllPartLiesInsideRect) {
+		// 检查椭圆是否完全在矩形内
+		if (math::checkEllipseFullyInsideRect(
+			data.center,
+			data.majorRadius,
+			data.minorRadius,
+			data.angle,
+			this->topLeft,
+			this->bottomRight)) {
+
+			*this->foundEntity = ellipse;
+		}
+	}
+	else {
+		// 检查椭圆是否与矩形相交
+		if (math::checkEllipseIntersectsRect(
+			data.center,
+			data.majorRadius,
+			data.minorRadius,
+			data.angle,
+			this->topLeft,
+			this->bottomRight)) {
+
+			*this->foundEntity = ellipse;
+		}
+	}
+}
+// 添加ShRectFinder的visit(ShBlock*)实现
+void ShRectFinder::visit(ShBlock* block) {
+	ShEntity* foundEntity = nullptr;
+	int count = 0;
+	ShRectFinder visitor(this->topLeft, this->bottomRight, &foundEntity, this->findMethod);
+
+	if (this->findMethod == FindMethod::AllPartLiesInsideRect) {
+		// 检查块中所有实体是否都在矩形内
+		for (ShEntity* entity : block->getEntities()) {
+			entity->accept(&visitor);
+			if (foundEntity != nullptr) {
+				count++;
+				foundEntity = nullptr;
+			}
+		}
+		if (count == block->getEntityCount()) {
+			*this->foundEntity = block;
+		}
+	}
+	else {
+		// 检查块中是否有任意实体与矩形相交
+		for (ShEntity* entity : block->getEntities()) {
+			entity->accept(&visitor);
+			if (foundEntity != nullptr) {
+				*this->foundEntity = block;
+				break;
+			}
+		}
+	}
+}
 void ShRectFinder::visit(ShCircle *circle) {
 
 	ShCircleData data = circle->getData();

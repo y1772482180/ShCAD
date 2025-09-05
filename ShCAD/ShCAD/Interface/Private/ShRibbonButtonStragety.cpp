@@ -154,7 +154,63 @@ QString ShRibbonCircleButtonThreePointStrategy::getToolTip() {
 
 	return QString("3-Point \nCreates a circle using three points on the circumference");
 }
+////////////////////////////////////////////////////////////////////////////////////
+// Ellipse Button Strategies
+////////////////////////////////////////////////////////////////////////////////////
 
+ShRibbonEllipseButtonCenterAxisStrategy::ShRibbonEllipseButtonCenterAxisStrategy() {
+}
+
+ShRibbonEllipseButtonCenterAxisStrategy::~ShRibbonEllipseButtonCenterAxisStrategy() {
+}
+
+void ShRibbonEllipseButtonCenterAxisStrategy::execute() {
+	if (ShCADWidgetManager::getInstance()->getActivatedWidget() == nullptr)
+		return;
+
+	ShChangeActionAfterCancelingCurrentStrategy strategy(ActionType::ActionDrawEllipseCenterAxis);
+	ShCADWidgetManager::getInstance()->getActivatedWidget()->changeAction(strategy);
+}
+
+ShIcon ShRibbonEllipseButtonCenterAxisStrategy::getIcon() {
+	return ShIcon(":/Image/Draw/Ellipse/Center-Axis.png");
+}
+
+ShIcon ShRibbonEllipseButtonCenterAxisStrategy::getIcon_() {
+	return ShIcon(":/Image/Draw/Ellipse/Center-Axis.png");
+}
+
+QString ShRibbonEllipseButtonCenterAxisStrategy::getToolTip() {
+	return QString("Center and Axes \nCreates an ellipse using a center point and axis lengths");
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+
+ShRibbonEllipseButtonAxisEndStrategy::ShRibbonEllipseButtonAxisEndStrategy() {
+}
+
+ShRibbonEllipseButtonAxisEndStrategy::~ShRibbonEllipseButtonAxisEndStrategy() {
+}
+
+void ShRibbonEllipseButtonAxisEndStrategy::execute() {
+	if (ShCADWidgetManager::getInstance()->getActivatedWidget() == nullptr)
+		return;
+
+	ShChangeActionAfterCancelingCurrentStrategy strategy(ActionType::ActionDrawEllipseAxisEnd);
+	ShCADWidgetManager::getInstance()->getActivatedWidget()->changeAction(strategy);
+}
+
+ShIcon ShRibbonEllipseButtonAxisEndStrategy::getIcon() {
+	return ShIcon(":/Image/Draw/Ellipse/Axis-End.png");
+}
+
+ShIcon ShRibbonEllipseButtonAxisEndStrategy::getIcon_() {
+	return ShIcon(":/Image/Draw/Ellipse/Axis-End.png");
+}
+
+QString ShRibbonEllipseButtonAxisEndStrategy::getToolTip() {
+	return QString("Axis Ends \nCreates an ellipse by specifying axis end points");
+}
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ShRibbonArcButtonThreePointStrategy::ShRibbonArcButtonThreePointStrategy() {

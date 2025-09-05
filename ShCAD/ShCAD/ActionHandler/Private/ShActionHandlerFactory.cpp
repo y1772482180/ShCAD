@@ -5,6 +5,7 @@
 #include "ActionHandler\DrawAction\ShDrawXLineAction.h"
 #include "ActionHandler\DrawAction\ShDrawCircleAction.h"
 #include "ActionHandler\DrawAction\ShDrawArcAction.h"
+#include "ActionHandler\DrawAction\ShDrawEllipseAction.h"
 #include "ActionHandler\ModifyAction\ShModifyMoveAction.h"
 #include "ActionHandler\ModifyAction\ShModifyCopyAction.h"
 #include "ActionHandler\ModifyAction\ShModifyRotateAction.h"
@@ -14,6 +15,7 @@
 #include "ActionHandler\ModifyAction\ShModifyTrimAction.h"
 #include "ActionHandler\ModifyAction\ShModifyStretchAction.h"
 #include "ActionHandler\ModifyAction\ShModifyOffsetAction.h"
+#include "ActionHandler/ModifyAction/ShModifyBlockAction.h"
 #include "ActionHandler\DrawAction\DrawDimAction\ShDrawDimLinearAction.h"
 #include "ActionHandler\DrawAction\ShDrawPointAction.h"
 #include "ActionHandler\ShSelectPlotAreaAction.h"
@@ -73,6 +75,10 @@ ShActionHandler* ShActionHandlerFactory::create(ActionType actionType, ShCADWidg
 	else if (actionType == ActionType::ActionDrawArcCenterStartLength)
 		return new ShDrawArcAction(widget, ShDrawArcAction::SubAction::CenterStartLength);
 
+	else if (actionType == ActionType::ActionDrawEllipseCenterAxis)
+		return new ShDrawEllipseAction(widget, ShDrawEllipseAction::SubAction::CenterAxis);
+	else if (actionType == ActionType::ActionDrawEllipseAxisEnd)
+		return new ShDrawEllipseAction(widget, ShDrawEllipseAction::SubAction::AxisEnd);
 
 	else if (actionType == ActionType::ActionModifyMove)
 		return new ShModifyMoveAction(widget);
@@ -92,7 +98,8 @@ ShActionHandler* ShActionHandlerFactory::create(ActionType actionType, ShCADWidg
 		return new ShModifyStretchAction(widget);
 	else if (actionType == ActionType::ActionModifyOffset)
 		return new ShModifyOffsetAction(widget);
-
+	else if (actionType == ActionType::ActionModifyBlock)
+		return new ShModifyBlockAction(widget);
 
 
 	else if (actionType == ActionType::ActionDrawDimLinear)

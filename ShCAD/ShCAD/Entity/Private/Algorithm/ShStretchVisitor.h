@@ -27,6 +27,9 @@ enum StretchPoint {
 	StretchText,
 	StretchDim,
 	StretchBoundary,
+	StretchMajorAxis,  // 新增：拉伸长轴端点
+	StretchMinorAxis,   // 新增：拉伸短轴端点
+	StretchBlockBase
 
 };
 
@@ -85,6 +88,8 @@ public:
 	virtual void visit(ShDimArcLength *dimArcLength);
 	virtual void visit(ShDimAngular *dimAngular);
 	virtual void visit(ShConstructionLine *constructionLine);
+	virtual void visit(ShEllipse* ellipse);  // 新增椭圆支持
+	virtual void visit(ShBlock* block);
 
 public:
 	void setOriginal(ShEntity *original) { this->original = original; }
@@ -117,6 +122,9 @@ public:
 	virtual void visit(ShDimArcLength *dimArcLength);
 	virtual void visit(ShDimAngular *dimAngular);
 	virtual void visit(ShConstructionLine *constructionLine);
+	virtual void visit(ShEllipse* ellipse);  // 新增椭圆支持
+	virtual void visit(ShBlock* block);
+
 };
 
 /////////////////////////////////////////////////////////
@@ -142,6 +150,8 @@ public:
 	virtual void visit(ShDimArcLength *dimArcLength);
 	virtual void visit(ShDimAngular *dimAngular);
 	virtual void visit(ShConstructionLine *constructionLine);
+	virtual void visit(ShEllipse* ellipse);  // 新增椭圆支持
+	virtual void visit(ShBlock* block);
 
 };
 
@@ -170,6 +180,8 @@ public:
 	virtual void visit(ShDimArcLength *dimArcLength);
 	virtual void visit(ShDimAngular *dimAngular);
 	virtual void visit(ShConstructionLine *constructionLine);
+	virtual void visit(ShEllipse* ellipse);  // 新增椭圆支持
+	virtual void visit(ShBlock* block);
 
 private:
 	bool checkPointLiesInsideRect(const ShPoint3d &point);

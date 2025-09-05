@@ -49,12 +49,12 @@ enum ActionType {
 	ActionDrawArcCenterStartEnd,
 	ActionDrawArcCenterStartAngle,
 	ActionDrawArcCenterStartLength,
-
+	ActionDrawEllipseAxisEnd,
 	ActionDrawRectangle,
 	ActionDrawPolygon,
 	ActionDrawPolyLine,
-
-	ActionDrawPoint,
+	ActionDrawEllipseCenterAxis,
+	ActionDrawPoint,    
 
 	ActionModifyMove,
 	ActionModifyCopy,
@@ -66,6 +66,7 @@ enum ActionType {
 	ActionModifyExtend,
 	ActionModifyTrim,
 	ActionModifyOffset,
+	ActionModifyBlock,
 
 	ActionDrawDimLinear,
 	ActionDrawDimAligned,

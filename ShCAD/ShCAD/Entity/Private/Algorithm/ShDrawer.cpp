@@ -10,6 +10,8 @@
 #include "Entity\Leaf\ShRubberBand.h"
 #include "Entity\Leaf\ShPoint.h"
 #include "Entity\Leaf\ShDot.h"
+#include "Entity\Leaf\ShEllipse.h"
+#include"Entity/Leaf/ShBlock.h"
 #include "Entity\Composite\Dim\ShDimLinear.h"
 #include "Entity\Composite\Dim\ShDimAligned.h"
 #include "Entity\Composite\Dim\ShDimRadius.h"
@@ -318,6 +320,21 @@ void ShDrawer::drawDot(ShDot *dot, const GLColor &color, const GLushort &pattern
 	f.drawDot(glPoint, color);
 }
 
+void ShDrawer::drawBlock(ShBlock* block, const GLColor& color, const GLushort& pattern) {
+	// 保存当前颜色和线型
+	glLineStipple(1, pattern);
+	glEnable(GL_LINE_STIPPLE);
+	glColor3f(color.red, color.green, color.blue);
+
+	// 绘制块中的所有实体
+	const QList<ShEntity*>& entities = block->getEntities();
+	for (ShEntity* entity : entities) {
+		ShDrawerUnSelectedEntity drawer(this->widget, this->painter);
+		entity->accept(&drawer);
+	}
+
+	glDisable(GL_LINE_STIPPLE);
+}
 
 void ShDrawer::drawConstructionLine(ShConstructionLine *constructionLine, const GLColor &color, const GLushort &pattern) {
 
@@ -501,7 +518,47 @@ void ShDrawer::drawDimAngularWithoutChild(ShDimAngular *dimAngular, const GLColo
 	dimAngular->getDimensionStyle()->getDimensionTextStyle().drawDimensionAngleText(this->painter,
 		dx, dy, angle - 90, dimAngular->getAngle(), qColor, this->widget->getZoomRate());
 }
+// Add to ShDrawer class
+void ShDrawer::drawEllipse(ShEllipse* ellipse, const GLColor& color, const GLushort& pattern) {
+	ShDrawerFunctions f(this->widget);
+	ShEllipseData data = ellipse->getData();
 
+	glLineStipple(1, pattern);
+	glEnable(GL_LINE_STIPPLE);
+
+	// Draw ellipse using polygon approximation
+	const int segments = 360;
+	GLPoint* points = new GLPoint[segments];
+
+	double theta, x, y;
+	double major = data.majorRadius;
+	double minor = data.minorRadius;
+	double angle = data.angle * 3.1415926 / 180.0; // Convert to radians
+	double cosAngle = cos(angle);
+	double sinAngle = sin(angle);
+
+	for (int i = 0; i < segments; i++) {
+		theta = 2.0 * 3.1415926 * double(i) / double(segments);
+		x = major * cosf(theta);
+		y = minor * sinf(theta);
+
+		// Apply rotation
+		double xRot = x * cosAngle - y * sinAngle;
+		double yRot = x * sinAngle + y * cosAngle;
+
+		f.convertEntityToOpenGL(data.center.x + xRot, data.center.y + yRot, points[i].x, points[i].y);
+	}
+
+	glColor3f(color.red, color.green, color.blue);
+	glBegin(GL_LINE_LOOP);
+	for (int i = 0; i < segments; i++) {
+		glVertex2f(points[i].x, points[i].y);
+	}
+	glEnd();
+
+	delete[] points;
+	glDisable(GL_LINE_STIPPLE);
+}
 
 /////////////////////////////////////////////////////////
 
@@ -558,6 +615,16 @@ void ShDrawerUnSelectedEntity::visit(ShCircle *circle) {
 	this->drawCircle(circle, color, propertyData.getLineStyle().getPattern());
 }
 
+void ShDrawerUnSelectedEntity::visit(ShEllipse* ellipse) {
+	ShPropertyData propertyData = ellipse->getPropertyData();
+
+	GLColor color(propertyData.getColor().getRed() / 255.,
+		propertyData.getColor().getGreen() / 255.,
+		propertyData.getColor().getBlue() / 255.);
+
+	this->drawEllipse(ellipse, color, propertyData.getLineStyle().getPattern());
+}
+
 void ShDrawerUnSelectedEntity::visit(ShArc *arc) {
 
 	ShPropertyData propertyData = arc->getPropertyData();
@@ -583,6 +650,14 @@ void ShDrawerUnSelectedEntity::visit(ShPoint *point) {
 	
 	while (list.isEmpty() == false)
 		delete list.takeFirst();
+}
+
+void ShDrawerUnSelectedEntity::visit(ShBlock* block) {
+	ShPropertyData propertyData = block->getPropertyData();
+	GLColor color(propertyData.getColor().getRed() / 255.f,
+		propertyData.getColor().getGreen() / 255.f,
+		propertyData.getColor().getBlue() / 255.f);
+	this->drawBlock(block, color, propertyData.getLineStyle().getPattern());
 }
 
 void ShDrawerUnSelectedEntity::visit(ShDot *dot) {
@@ -739,6 +814,57 @@ void ShDrawerSelectedEntityVertex::visit(ShLine *line) {
 	points.append(data.end);
 	points.append(line->getMid());
 
+	this->drawVertex(points);
+}
+void ShDrawerSelectedEntityVertex::visit(ShEllipse* ellipse) {
+	ShDrawerSelectedEntityNoVertex visitor(this->widget, this->painter);
+	ellipse->accept(&visitor);
+
+	ShEllipseData data = ellipse->getData();
+
+	QList<ShPoint3d> points;
+	points.append(data.center);
+
+	// Add points along major and minor axes
+	double angle = data.angle * 3.1415926 / 180.0;
+	double cosAngle = cos(angle);
+	double sinAngle = sin(angle);
+
+	// Major axis points
+	points.append(ShPoint3d(
+		data.center.x + data.majorRadius * cosAngle,
+		data.center.y + data.majorRadius * sinAngle,
+		0
+	));
+	points.append(ShPoint3d(
+		data.center.x - data.majorRadius * cosAngle,
+		data.center.y - data.majorRadius * sinAngle,
+		0
+	));
+
+	// Minor axis points
+	points.append(ShPoint3d(
+		data.center.x - data.minorRadius * sinAngle,
+		data.center.y + data.minorRadius * cosAngle,
+		0
+	));
+	points.append(ShPoint3d(
+		data.center.x + data.minorRadius * sinAngle,
+		data.center.y - data.minorRadius * cosAngle,
+		0
+	));
+
+	this->drawVertex(points);
+}
+
+void ShDrawerSelectedEntityVertex::visit(ShBlock* block) {
+	// 先绘制无顶点版本
+	ShDrawerSelectedEntityNoVertex noVertexVisitor(this->widget, this->painter);
+	block->accept(&noVertexVisitor);
+
+	// 绘制块的顶点（基点）
+	QList<ShPoint3d> points;
+	points.append(block->getBasePoint());
 	this->drawVertex(points);
 }
 
@@ -967,9 +1093,17 @@ void ShDrawerSelectedEntityNoVertex::visit(ShCircle *circle) {
 	this->drawCircle(circle, GLColor(153.f / 255, 153.f / 155, 1.f), 0xF1F1);
 }
 
+void ShDrawerSelectedEntityNoVertex::visit(ShEllipse* ellipse) {
+	this->drawEllipse(ellipse, GLColor(153.f / 255, 153.f / 155, 1.f), 0xF1F1);
+}
+
 void ShDrawerSelectedEntityNoVertex::visit(ShArc *arc) {
 
 	this->drawArc(arc, GLColor(153.f / 255, 153.f / 155, 1.f), 0xF1F1);
+}
+
+void ShDrawerSelectedEntityNoVertex::visit(ShBlock* block) {
+	this->drawBlock(block, GLColor(153.f / 255, 153.f / 255, 1.f), 0xF1F1);
 }
 
 void ShDrawerSelectedEntityNoVertex::visit(ShPoint *point) {
@@ -1087,6 +1221,10 @@ void ShDrawerEraseBackGround::visit(ShCircle *circle) {
 	this->drawCircle(circle, GLColor(0, 0, 0), 0xFFFF);
 }
 
+void ShDrawerEraseBackGround::visit(ShEllipse* ellipse) {
+	this->drawEllipse(ellipse, GLColor(0, 0, 0), 0xFFFF);
+}
+
 void ShDrawerEraseBackGround::visit(ShArc *arc) {
 
 	this->drawArc(arc, GLColor(0, 0, 0), 0xFFFF);
@@ -1110,6 +1248,10 @@ void ShDrawerEraseBackGround::visit(ShPoint *point) {
 void ShDrawerEraseBackGround::visit(ShDot *dot) {
 
 	this->drawDot(dot, GLColor(0, 0, 0), 0xFFFF);
+}
+
+void ShDrawerEraseBackGround::visit(ShBlock* block) {
+	this->drawBlock(block, GLColor(0, 0, 0), 0xFFFF);
 }
 
 void ShDrawerEraseBackGround::visit(ShDimLinear *dimLinear) {

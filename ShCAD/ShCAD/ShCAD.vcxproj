@@ -21,23 +21,24 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B12702AD-ABFB-343A-A199-8E24837244A3}</ProjectGuid>
     <Keyword>Qt4VSv1.0</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -63,6 +64,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IncludePath>E:\QT5.14.2\5.14.2\msvc2017_64\include;E:\QT5.14.2\5.14.2\msvc2017_64\include\QtWidgets;E:\QT5.14.2\5.14.2\msvc2017_64\include\QtGui;E:\QT5.14.2\5.14.2\msvc2017_64\include\QtCore;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\QT5.14.2\5.14.2\msvc2017_64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
@@ -153,10 +156,12 @@
     <ClCompile Include="ActionHandler\DrawAction\ShDrawAction.cpp" />
     <ClCompile Include="ActionHandler\DrawAction\ShDrawArcAction.cpp" />
     <ClCompile Include="ActionHandler\DrawAction\ShDrawCircleAction.cpp" />
+    <ClCompile Include="ActionHandler\DrawAction\ShDrawEllipseAction.cpp" />
     <ClCompile Include="ActionHandler\DrawAction\ShDrawLineAction.cpp" />
     <ClCompile Include="ActionHandler\DrawAction\ShDrawPointAction.cpp" />
     <ClCompile Include="ActionHandler\DrawAction\ShDrawXLineAction.cpp" />
     <ClCompile Include="ActionHandler\ModifyAction\ShModifyAction.cpp" />
+    <ClCompile Include="ActionHandler\ModifyAction\ShModifyBlockAction.cpp" />
     <ClCompile Include="ActionHandler\ModifyAction\ShModifyCopyAction.cpp" />
     <ClCompile Include="ActionHandler\ModifyAction\ShModifyEraseAction.cpp" />
     <ClCompile Include="ActionHandler\ModifyAction\ShModifyExtendAction.cpp" />
@@ -222,9 +227,11 @@
     <ClCompile Include="Entity\Composite\ShPreview.cpp" />
     <ClCompile Include="Entity\Composite\ShSelectedEntities.cpp" />
     <ClCompile Include="Entity\Leaf\ShArc.cpp" />
+    <ClCompile Include="Entity\Leaf\ShBlock.cpp" />
     <ClCompile Include="Entity\Leaf\ShCircle.cpp" />
     <ClCompile Include="Entity\Leaf\ShConstructionLine.cpp" />
     <ClCompile Include="Entity\Leaf\ShDot.cpp" />
+    <ClCompile Include="Entity\Leaf\ShEllipse.cpp" />
     <ClCompile Include="Entity\Leaf\ShLeaf.cpp" />
     <ClCompile Include="Entity\Leaf\ShLine.cpp" />
     <ClCompile Include="Entity\Leaf\ShPoint.cpp" />
@@ -265,6 +272,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ShCircleParamDialog.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_ShColorComboBox.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -273,6 +281,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ShDrawCircleAction.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_ShHomeTab.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -379,6 +388,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Interface\Dialog\ShCircleParamDialog.cpp" />
     <ClCompile Include="Interface\Dialog\ShLayerDialog.cpp" />
     <ClCompile Include="Interface\Dialog\ShPlotDialog.cpp" />
     <ClCompile Include="Interface\Dialog\ShPlotPreviewDialog.cpp" />
@@ -515,11 +525,17 @@
     <ClInclude Include="ActionHandler\DrawAction\DrawDimAction\ShDrawDimRadiusAction.h" />
     <ClInclude Include="ActionHandler\DrawAction\ShDrawAction.h" />
     <ClInclude Include="ActionHandler\DrawAction\ShDrawArcAction.h" />
-    <ClInclude Include="ActionHandler\DrawAction\ShDrawCircleAction.h" />
+    <CustomBuild Include="ActionHandler\DrawAction\ShDrawCircleAction.h">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -D_UNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_PRINTSUPPORT_LIB  "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtPrintSupport" "-IC:\Program Files (x86)\Visual Leak Detector\include"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+    </CustomBuild>
+    <ClInclude Include="ActionHandler\DrawAction\ShDrawEllipseAction.h" />
     <ClInclude Include="ActionHandler\DrawAction\ShDrawLineAction.h" />
     <ClInclude Include="ActionHandler\DrawAction\ShDrawPointAction.h" />
     <ClInclude Include="ActionHandler\DrawAction\ShDrawXLineAction.h" />
     <ClInclude Include="ActionHandler\ModifyAction\ShModifyAction.h" />
+    <ClInclude Include="ActionHandler\ModifyAction\ShModifyBlockAction.h" />
     <ClInclude Include="ActionHandler\ModifyAction\ShModifyCopyAction.h" />
     <ClInclude Include="ActionHandler\ModifyAction\ShModifyEraseAction.h" />
     <ClInclude Include="ActionHandler\ModifyAction\ShModifyExtendAction.h" />
@@ -590,9 +606,11 @@
     <ClInclude Include="Entity\Composite\ShPreview.h" />
     <ClInclude Include="Entity\Composite\ShSelectedEntities.h" />
     <ClInclude Include="Entity\Leaf\ShArc.h" />
+    <ClInclude Include="Entity\Leaf\ShBlock.h" />
     <ClInclude Include="Entity\Leaf\ShCircle.h" />
     <ClInclude Include="Entity\Leaf\ShConstructionLine.h" />
     <ClInclude Include="Entity\Leaf\ShDot.h" />
+    <ClInclude Include="Entity\Leaf\ShEllipse.h" />
     <ClInclude Include="Entity\Leaf\ShLeaf.h" />
     <ClInclude Include="Entity\Leaf\ShLine.h" />
     <ClInclude Include="Entity\Leaf\ShPoint.h" />
@@ -698,6 +716,12 @@
     <ClInclude Include="Event\ToolBarEventFilter\ShLayerToolBarEventFilter.h" />
     <ClInclude Include="Event\ToolBarEventFilter\ShPropertyToolBarEventFilter.h" />
     <ClInclude Include="Event\ToolBarEventFilter\ShQuickAccessToolBarEventFilter.h" />
+    <CustomBuild Include="Interface\Dialog\ShCircleParamDialog.h">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -D_UNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_PRINTSUPPORT_LIB  "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtPrintSupport" "-IC:\Program Files (x86)\Visual Leak Detector\include"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing ShButton.h...</Message>
+    </CustomBuild>
     <ClInclude Include="Interface\Dialog\ShPlotPreviewDialog.h" />
     <CustomBuild Include="Interface\Item\ShDimensionStyleComboBox.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

@@ -28,7 +28,39 @@ namespace math {
 		const ShPoint3d &start, const ShPoint3d &end);
 	bool checkTwoCirclesIntersect(const ShPoint3d &center, double radius, const ShPoint3d &center2, double radius2,
 		ShPoint3d &intersect, ShPoint3d &intersect2);
+	bool checkPointLiesOnEllipseBoundary(
+		const ShPoint3d& point,
+		const ShPoint3d& center,
+		double majorRadius,
+		double minorRadius,
+		double angle,
+		double tolerance);
 
+	bool checkEllipseFullyInsideRect(
+		const ShPoint3d& center,
+		double majorRadius,
+		double minorRadius,
+		double angle,
+		const ShPoint3d& rectTopLeft,
+		const ShPoint3d& rectBottomRight);
+
+	bool checkEllipseIntersectsRect(
+		const ShPoint3d& center,
+		double majorRadius,
+		double minorRadius,
+		double angle,
+		const ShPoint3d& rectTopLeft,
+		const ShPoint3d& rectBottomRight);
+
+	bool checkEllipseLineIntersect(
+		const ShPoint3d& center,
+		double majorRadius,
+		double minorRadius,
+		double angle,
+		const ShPoint3d& lineStart,
+		const ShPoint3d& lineEnd,
+		ShPoint3d& intersect1,
+		ShPoint3d& intersect2);
 	ShPoint3d getCenterWithTwoPointRadius(const ShPoint3d &first, const ShPoint3d &second, const double& radius);
 
 	bool getCenterWithThreePoint(const ShPoint3d &first, const ShPoint3d &second, const ShPoint3d &third, ShPoint3d &center);
@@ -46,7 +78,7 @@ namespace math {
 	double addAngle(double angle, double angle2);
 
 	void getEquationLine(const ShPoint3d &start, const ShPoint3d &end, double &slope, double &interceptY);
-
+	double degreeToRadian(double degree);  // 新增：角度转弧度函数
 	template <typename T>
 	void swap(T& first, T& second) {
 	

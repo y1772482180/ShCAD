@@ -2,6 +2,7 @@
 
 #include "ShMath.h"
 #include <math.h>
+#include <algorithm>
 
 int math::toInt(double value) {
 
@@ -526,7 +527,9 @@ double math::addAngle(double angle, double angle2) {
 
 	return addedAngle;
 }
-
+double math::degreeToRadian(double degree) {
+	return degree * 3.1415926535897 / 180.0;
+}
 void math::getEquationLine(const ShPoint3d &start, const ShPoint3d &end, double &slope, double &interceptY) {
 
 	slope = 0.0;
@@ -535,4 +538,192 @@ void math::getEquationLine(const ShPoint3d &start, const ShPoint3d &end, double 
 		slope = (end.y - start.y) / (end.x - start.x);
 
 	interceptY = start.y - slope*start.x;
+}
+bool math::checkPointLiesOnEllipseBoundary(
+	const ShPoint3d& point,
+	const ShPoint3d& center,
+	double majorRadius,
+	double minorRadius,
+	double angle,
+	double tolerance) {
+
+	// 转换为椭圆坐标系
+	double x = point.x - center.x;
+	double y = point.y - center.y;
+
+	// 旋转角度处理(转换为椭圆坐标系)
+	double radAngle = angle * 3.1415926535897 / 180.0;
+	double cosA = cos(-radAngle);
+	double sinA = sin(-radAngle);
+	double xRot = x * cosA - y * sinA;
+	double yRot = x * sinA + y * cosA;
+
+	// 椭圆方程检查
+	double value = (xRot * xRot) / (majorRadius * majorRadius) +
+		(yRot * yRot) / (minorRadius * minorRadius);
+
+	// 考虑容差
+	return fabs(value - 1.0) <= tolerance;
+}
+
+bool math::checkEllipseFullyInsideRect(
+	const ShPoint3d& center,
+	double majorRadius,
+	double minorRadius,
+	double angle,
+	const ShPoint3d& rectTopLeft,
+	const ShPoint3d& rectBottomRight) {
+
+	// 检查椭圆外接矩形是否完全在目标矩形内
+	double radAngle = angle * 3.1415926535897 / 180.0;
+	double cosA = cos(radAngle);
+	double sinA = sin(radAngle);
+
+	// 计算椭圆四个极值点
+	double a2 = majorRadius * majorRadius;
+	double b2 = minorRadius * minorRadius;
+	double phi = atan2(b2 * sinA * cosA, (a2 * cosA * cosA + b2 * sinA * sinA));
+
+	// 计算x方向极值
+	double xExtent1 = majorRadius * cosA * cos(phi) - minorRadius * sinA * sin(phi);
+	double xExtent2 = -majorRadius * cosA * cos(phi) + minorRadius * sinA * sin(phi);
+
+	// 计算y方向极值
+	double yExtent1 = majorRadius * sinA * cos(phi) + minorRadius * cosA * sin(phi);
+	double yExtent2 = -majorRadius * sinA * cos(phi) - minorRadius * cosA * sin(phi);
+
+	// 检查所有极值点是否在矩形内
+	return (center.x + std::max(xExtent1, xExtent2) <= rectBottomRight.x &&
+		center.x + std::min(xExtent1, xExtent2) >= rectTopLeft.x &&
+		center.y + std::max(yExtent1, yExtent2) <= rectTopLeft.y &&
+		center.y + std::min(yExtent1, yExtent2) >= rectBottomRight.y);
+}
+
+bool math::checkEllipseIntersectsRect(
+	const ShPoint3d& center,
+	double majorRadius,
+	double minorRadius,
+	double angle,
+	const ShPoint3d& rectTopLeft,
+	const ShPoint3d& rectBottomRight) {
+
+	// 简单检查：椭圆中心是否在矩形内
+	if (checkPointLiesInsideRect(center, rectTopLeft, rectBottomRight, 0))
+		return true;
+
+	// 检查矩形顶点是否在椭圆内
+	ShPoint3d rectPoints[4] = {
+		rectTopLeft,
+		ShPoint3d(rectBottomRight.x, rectTopLeft.y),
+		rectBottomRight,
+		ShPoint3d(rectTopLeft.x, rectBottomRight.y)
+	};
+
+	for (int i = 0; i < 4; i++) {
+		if (checkPointLiesOnEllipseBoundary(rectPoints[i], center, majorRadius, minorRadius, angle, 0))
+			return true;
+	}
+
+	// 检查椭圆与矩形边的交点
+	ShPoint3d lineStart, lineEnd;
+	ShPoint3d intersect1, intersect2;
+
+	// 检查上边
+	lineStart = rectTopLeft;
+	lineEnd = ShPoint3d(rectBottomRight.x, rectTopLeft.y);
+	if (checkEllipseLineIntersect(center, majorRadius, minorRadius, angle, lineStart, lineEnd, intersect1, intersect2))
+		return true;
+
+	// 检查右边
+	lineStart = ShPoint3d(rectBottomRight.x, rectTopLeft.y);
+	lineEnd = rectBottomRight;
+	if (checkEllipseLineIntersect(center, majorRadius, minorRadius, angle, lineStart, lineEnd, intersect1, intersect2))
+		return true;
+
+	// 检查下边
+	lineStart = rectBottomRight;
+	lineEnd = ShPoint3d(rectTopLeft.x, rectBottomRight.y);
+	if (checkEllipseLineIntersect(center, majorRadius, minorRadius, angle, lineStart, lineEnd, intersect1, intersect2))
+		return true;
+
+	// 检查左边
+	lineStart = ShPoint3d(rectTopLeft.x, rectBottomRight.y);
+	lineEnd = rectTopLeft;
+	if (checkEllipseLineIntersect(center, majorRadius, minorRadius, angle, lineStart, lineEnd, intersect1, intersect2))
+		return true;
+
+	return false;
+}
+
+bool math::checkEllipseLineIntersect(
+	const ShPoint3d& center,
+	double majorRadius,
+	double minorRadius,
+	double angle,
+	const ShPoint3d& lineStart,
+	const ShPoint3d& lineEnd,
+	ShPoint3d& intersect1,
+	ShPoint3d& intersect2) {
+
+	// 转换为椭圆坐标系
+	double x0 = center.x;
+	double y0 = center.y;
+	double a = majorRadius;
+	double b = minorRadius;
+	double theta = angle * 3.1415926535897 / 180.0;
+
+	// 旋转直线到椭圆坐标系
+	double x1 = lineStart.x - x0;
+	double y1 = lineStart.y - y0;
+	double x2 = lineEnd.x - x0;
+	double y2 = lineEnd.y - y0;
+
+	double cosT = cos(-theta);
+	double sinT = sin(-theta);
+
+	double rx1 = x1 * cosT - y1 * sinT;
+	double ry1 = x1 * sinT + y1 * cosT;
+	double rx2 = x2 * cosT - y2 * sinT;
+	double ry2 = x2 * sinT + y2 * cosT;
+
+	// 计算直线参数方程
+	double dx = rx2 - rx1;
+	double dy = ry2 - ry1;
+
+	// 解椭圆与直线交点方程
+	double A = (dx * dx) / (a * a) + (dy * dy) / (b * b);
+	double B = 2 * (rx1 * dx) / (a * a) + 2 * (ry1 * dy) / (b * b);
+	double C = (rx1 * rx1) / (a * a) + (ry1 * ry1) / (b * b) - 1;
+
+	double discriminant = B * B - 4 * A * C;
+
+	if (discriminant < 0) {
+		return false; // 无交点
+	}
+
+	double sqrtDiscriminant = sqrt(discriminant);
+	double t1 = (-B + sqrtDiscriminant) / (2 * A);
+	double t2 = (-B - sqrtDiscriminant) / (2 * A);
+
+	bool hasIntersection = false;
+
+	if (t1 >= 0 && t1 <= 1) {
+		double ix = rx1 + t1 * dx;
+		double iy = ry1 + t1 * dy;
+		// 旋转回原坐标系
+		intersect1.x = ix * cos(theta) - iy * sin(theta) + x0;
+		intersect1.y = ix * sin(theta) + iy * cos(theta) + y0;
+		hasIntersection = true;
+	}
+
+	if (t2 >= 0 && t2 <= 1) {
+		double ix = rx1 + t2 * dx;
+		double iy = ry1 + t2 * dy;
+		// 旋转回原坐标系
+		intersect2.x = ix * cos(theta) - iy * sin(theta) + x0;
+		intersect2.y = ix * sin(theta) + iy * cos(theta) + y0;
+		hasIntersection = true;
+	}
+
+	return hasIntersection;
 }

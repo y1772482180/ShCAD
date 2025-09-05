@@ -33,6 +33,8 @@ public:
 	virtual void visit(ShDimArcLength *dimArcLength);
 	virtual void visit(ShDimAngular *dimAngular);
 	virtual void visit(ShConstructionLine *constructionLine);
+	virtual void visit(ShBlock* block);  // 添加对块的访问方法
+	virtual void visit(ShEllipse* ellipse);  // 新增：椭圆支持
 
 private:
 	bool isNear(int x, int y, const ShPoint3d &point, double zoomRate, double tolerance);
@@ -64,6 +66,9 @@ public:
 	virtual void visit(ShDimArcLength *dimArcLength);
 	virtual void visit(ShDimAngular *dimAngular);
 	virtual void visit(ShConstructionLine *constructionLine);
+	virtual void visit(ShBlock* block);  // 添加对块的访问方法
+	virtual void visit(ShEllipse* ellipse);  // 新增：椭圆支持
+
 };
 
 

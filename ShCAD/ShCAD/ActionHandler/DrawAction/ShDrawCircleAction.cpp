@@ -5,7 +5,7 @@
 #include "KeyHandler\ShKeyHandler.h"
 #include "Command\ShAvailableCommands.h"
 #include "Command\ShCustomCommand.h"
-
+#include"qobject.h"
 ShDrawCircleAction::ShDrawCircleAction(ShCADWidget *widget, SubAction subAction)
 	:ShDrawAction(widget), status(PickedNothing), subAction(subAction), subDrawCircleAction(nullptr) {
 
@@ -141,15 +141,30 @@ void ShSubDrawCircleAction::setLastBasePoint(const ShPoint3d &point) {
 //////////////////////////////////////////////////////////////////////
 
 
-ShSubDrawCircleAction_CenterRadius::ShSubDrawCircleAction_CenterRadius(ShDrawCircleAction *drawCircleAction, ShCADWidget *widget)
-	:ShSubDrawCircleAction(drawCircleAction, widget) {
+// 在构造函数中创建并显示对话框
+ShSubDrawCircleAction_CenterRadius::ShSubDrawCircleAction_CenterRadius(ShDrawCircleAction* drawCircleAction, ShCADWidget* widget)
+	: ShSubDrawCircleAction(drawCircleAction, widget), dialog(new ShCircleParamDialog(widget)), useDialog(true)
+{
+	// 初始化对话框连接
+	connect(dialog, &ShCircleParamDialog::centerConfirmed,
+		this, &ShSubDrawCircleAction_CenterRadius::handleDialogCenterConfirmed);
+	connect(dialog, &QDialog::finished,
+		this, &ShSubDrawCircleAction_CenterRadius::handleDialogFinished);
 
+	// 初始设置为中心点输入模式
+	dialog->setMode(ShCircleParamDialog::CenterInput);
+	dialog->setRadiusEditable(false);
+
+	// 立即显示对话框
+	dialog->show();
 }
+
 
 ShSubDrawCircleAction_CenterRadius::~ShSubDrawCircleAction_CenterRadius() {
-
+	if (dialog != nullptr) {
+		delete dialog;
+	}
 }
-
 
 ActionType ShSubDrawCircleAction_CenterRadius::getType() {
 
@@ -197,51 +212,204 @@ ShAvailableDraft ShSubDrawCircleAction_CenterRadius::getAvailableDraft() {
 
 void ShSubDrawCircleAction_CenterRadius::invalidate(ShPoint3d &point) {
 
-	if (this->getStatus() == ShDrawCircleAction::Status::PickedCenter) {
-	
-		ShCircle *prevCircle = dynamic_cast<ShCircle*>((*this->widget->getPreview().begin()));
-		ShPoint3d center = prevCircle->getCenter();
+	//if (this->getStatus() == ShDrawCircleAction::Status::PickedCenter) {
+	//
+	//	ShCircle *prevCircle = dynamic_cast<ShCircle*>((*this->widget->getPreview().begin()));
+	//	ShPoint3d center = prevCircle->getCenter();
 
-		double radius = math::getDistance(center.x, center.y, point.x, point.y);
+	//	double radius = math::getDistance(center.x, center.y, point.x, point.y);
 
-		prevCircle->setRadius(radius);
+	//	prevCircle->setRadius(radius);
 
-		this->widget->getRubberBand().setEnd(point);
+	//	this->widget->getRubberBand().setEnd(point);
 
-		this->widget->update((DrawType)(DrawType::DrawCaptureImage | DrawType::DrawPreviewEntities));
+	//	this->widget->update((DrawType)(DrawType::DrawCaptureImage | DrawType::DrawPreviewEntities));
+	//}
+	if (this->getStatus() == ShDrawCircleAction::Status::PickedNothing) {
+		// 在未确定圆心前，实时更新对话框中的坐标
+		if (dialog->isVisible() && dialog->getCurrentMode() == ShCircleParamDialog::CenterInput) {
+			dialog->updateCenter(point.x, point.y);
+		}
 	}
+	else if (this->getStatus() == ShDrawCircleAction::Status::PickedCenter) {
+		ShCircle* prevCircle = dynamic_cast<ShCircle*>((*this->widget->getPreview().begin()));
+		if (prevCircle) {
+			ShPoint3d center = prevCircle->getCenter();
+			double radius = math::getDistance(center.x, center.y, point.x, point.y);
+
+			// 实时更新对话框中的半径值
+			if (dialog->isVisible() && dialog->getCurrentMode() == ShCircleParamDialog::RadiusInput) {
+				dialog->updateRadius(radius);
+			}
+
+			// 更新图形显示
+			prevCircle->setRadius(radius);
+			this->widget->getRubberBand().setEnd(point);
+			this->widget->update((DrawType)(DrawType::DrawCaptureImage | DrawType::DrawPreviewEntities));
+		}
+	}
+
+}
+void ShSubDrawCircleAction_CenterRadius::handleDialogCenterConfirmed() {
+	ShPoint3d center = dialog->getCenter();
+
+	// 更新状态
+	this->getStatus() = ShDrawCircleAction::Status::PickedCenter;
+
+	// 创建/更新预览图形
+	this->widget->getPreview().clear();
+	this->widget->getPreview().add(new ShCircle(this->widget->getPropertyData(),
+		ShCircleData(center, 0),
+		this->widget->getCurrentLayer()));
+	this->widget->getRubberBand().create(ShLineData(center, center));
+
+	// 切换到半径输入模式
+	dialog->setMode(ShCircleParamDialog::RadiusInput);
+	dialog->setCenterEditable(false);
+
+	this->setLastBasePoint(center);
+	this->triggerSucceeded();
+}
+void ShSubDrawCircleAction_CenterRadius::handleDialogFinished(int result) {
+	if (result == QDialog::Accepted && this->getStatus() == ShDrawCircleAction::Status::PickedCenter) {
+		ShCircle* prevCircle = dynamic_cast<ShCircle*>((*this->widget->getPreview().begin()));
+		if (prevCircle) {
+			prevCircle->setRadius(dialog->getRadius());
+			this->addEntity(prevCircle->clone(), "Circle");
+		}
+	}
+	this->actionFinished();
+	//dialog->hide();
 }
 
 void ShSubDrawCircleAction_CenterRadius::trigger(const ShPoint3d &point) {
 
+	//if (this->getStatus() == ShDrawCircleAction::Status::PickedNothing) {
+	//	// 创建并显示对话框
+	//	if (dialog == nullptr) {
+	//		dialog = new ShCircleParamDialog(this->widget);
+	//		QObject::connect(dialog, &ShCircleParamDialog::centerConfirmed,
+	//			this, &ShSubDrawCircleAction_CenterRadius::handleDialogCenterConfirmed);
+	//		QObject::connect(dialog, &QDialog::finished,
+	//			this, &ShSubDrawCircleAction_CenterRadius::handleDialogFinished);
+	//		QObject::connect(dialog, &ShCircleParamDialog::radiusConfirmed,
+	//			[this]() {
+	//				if (dialog->getCurrentMode() == ShCircleParamDialog::RadiusInput) {
+	//					double radius = dialog->getRadius();
+	//					ShCircle* prevCircle = dynamic_cast<ShCircle*>((*this->widget->getPreview().begin()));
+	//					if (prevCircle) {
+	//						prevCircle->setRadius(radius);
+	//						this->widget->update((DrawType)(DrawType::DrawCaptureImage | DrawType::DrawPreviewEntities));
+	//					}
+	//				}
+	//			});
+	//	}
+
+	//	dialog->setMode(ShCircleParamDialog::CenterInput);
+	//	dialog->setRadiusEditable(false);
+	//	dialog->updateCenter(point.x, point.y);
+	//	dialog->show();
+	//	useDialog = true;
+	//	this->getStatus() = ShDrawCircleAction::Status::PickedCenter;
+
+	//	this->widget->getPreview().add(new ShCircle(this->widget->getPropertyData(), ShCircleData(point, 0), this->widget->getCurrentLayer()));
+	//	this->widget->getRubberBand().create(ShLineData(point, point));
+
+	//	this->setLastBasePoint(point);
+	//	this->triggerSucceeded();
+	//}
+	//else if (this->getStatus() == ShDrawCircleAction::PickedCenter) {
+	//	if (useDialog && dialog != nullptr && dialog->isVisible()) {
+	//		// 如果对话框处于中心点输入模式，更新中心点坐标
+	//		if (dialog->getCurrentMode() == ShCircleParamDialog::CenterInput) {
+	//			dialog->updateCenter(point.x, point.y);
+	//		}
+	//		// 如果对话框处于半径输入模式，更新半径
+	//		else if (dialog->getCurrentMode() == ShCircleParamDialog::RadiusInput) {
+	//			ShCircle* prevCircle = dynamic_cast<ShCircle*>((*this->widget->getPreview().begin()));
+	//			if (prevCircle) {
+	//				ShPoint3d center = prevCircle->getCenter();
+	//				double radius = math::getDistance(center.x, center.y, point.x, point.y);
+	//				dialog->updateRadius(radius);
+	//				prevCircle->setRadius(radius);
+	//				this->widget->update((DrawType)(DrawType::DrawCaptureImage | DrawType::DrawPreviewEntities));
+	//			}
+	//		}
+	//	}
+	//	else {
+	//		ShCircle* prevCircle = dynamic_cast<ShCircle*>((*this->widget->getPreview().begin()));
+	//		if (prevCircle) {
+	//			ShCircleData data = prevCircle->getData();
+	//			data.radius = math::getDistance(data.center.x, data.center.y, point.x, point.y);
+	//			if (math::compare(data.radius, 0) <= 0) {
+	//				this->triggerFailed(ShActionTriggerFailureReason::ValueMustBeGreaterThanZero);
+	//				return;
+	//			}
+	//			prevCircle->setData(data);
+	//			this->addEntity(prevCircle->clone(), "Circle");
+	//			this->setLastBasePoint(point);
+	//			this->actionFinished();
+	//		}
+	//	}
+	//}
+	////else if (this->getStatus() == ShDrawCircleAction::PickedCenter) {
+	//	if (useDialog) {
+	//		// 如果使用对话框，半径已经在对话框处理中设置
+	//		return;
+	//	}
+	//	ShCircle *prevCircle = dynamic_cast<ShCircle*>((*this->widget->getPreview().begin()));
+	//	ShCircleData data = prevCircle->getData();
+
+	//	data.radius = math::getDistance(data.center.x, data.center.y, point.x, point.y);
+	//	
+	//	if (math::compare(data.radius, 0) == 0 || math::compare(data.radius, 0) == -1) {
+	//		this->triggerFailed(ShActionTriggerFailureReason::ValueMustBeGreaterThanZero);
+	//		return;
+	//	}
+
+	//	prevCircle->setData(data);
+
+	//	this->addEntity(prevCircle->clone(), "Circle");
+
+	//	this->setLastBasePoint(point);
+	//	this->actionFinished();
+	//}
 	if (this->getStatus() == ShDrawCircleAction::Status::PickedNothing) {
-	
+		// 确认圆心
 		this->getStatus() = ShDrawCircleAction::Status::PickedCenter;
 
-		this->widget->getPreview().add(new ShCircle(this->widget->getPropertyData(), ShCircleData(point, 0), this->widget->getCurrentLayer()));
+		// 创建预览图形
+		this->widget->getPreview().add(new ShCircle(this->widget->getPropertyData(),
+			ShCircleData(point, 0),
+			this->widget->getCurrentLayer()));
 		this->widget->getRubberBand().create(ShLineData(point, point));
+
+		// 切换到半径输入模式
+		dialog->setMode(ShCircleParamDialog::RadiusInput);
+		dialog->setCenterEditable(false);
 
 		this->setLastBasePoint(point);
 		this->triggerSucceeded();
 	}
 	else if (this->getStatus() == ShDrawCircleAction::PickedCenter) {
-	
-		ShCircle *prevCircle = dynamic_cast<ShCircle*>((*this->widget->getPreview().begin()));
-		ShCircleData data = prevCircle->getData();
+		// 完成绘制
+		ShCircle* prevCircle = dynamic_cast<ShCircle*>((*this->widget->getPreview().begin()));
+		if (prevCircle) {
+			ShCircleData data = prevCircle->getData();
+			data.radius = math::getDistance(data.center.x, data.center.y, point.x, point.y);
 
-		data.radius = math::getDistance(data.center.x, data.center.y, point.x, point.y);
-		
-		if (math::compare(data.radius, 0) == 0 || math::compare(data.radius, 0) == -1) {
-			this->triggerFailed(ShActionTriggerFailureReason::ValueMustBeGreaterThanZero);
-			return;
+			if (math::compare(data.radius, 0) <= 0) {
+				this->triggerFailed(ShActionTriggerFailureReason::ValueMustBeGreaterThanZero);
+				return;
+			}
+
+			this->addEntity(prevCircle->clone(), "Circle");
+			this->setLastBasePoint(point);
+			this->actionFinished();
+
+			// 隐藏对话框
+		//	dialog->hide();
 		}
-
-		prevCircle->setData(data);
-
-		this->addEntity(prevCircle->clone(), "Circle");
-
-		this->setLastBasePoint(point);
-		this->actionFinished();
 	}
 }
 

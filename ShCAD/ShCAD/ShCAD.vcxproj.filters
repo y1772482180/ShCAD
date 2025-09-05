@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;cxx;c;def</Extensions>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h</Extensions>
@@ -133,6 +129,10 @@
     </Filter>
     <Filter Include="Entity\Private\Algorithm">
       <UniqueIdentifier>{8cdbcf12-43b7-4adb-8f0b-4a85ee197ae4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;cxx;c;def</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -745,6 +745,27 @@
     <ClCompile Include="Entity\Private\Algorithm\ShVisitor.cpp">
       <Filter>Entity\Private\Algorithm</Filter>
     </ClCompile>
+    <ClCompile Include="ActionHandler\DrawAction\ShDrawEllipseAction.cpp">
+      <Filter>ActionHandler\DrawAction</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity\Leaf\ShEllipse.cpp">
+      <Filter>Entity\Leaf</Filter>
+    </ClCompile>
+    <ClCompile Include="Interface\Dialog\ShCircleParamDialog.cpp">
+      <Filter>Interface\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ShCircleParamDialog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ShDrawCircleAction.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="ActionHandler\ModifyAction\ShModifyBlockAction.cpp">
+      <Filter>ActionHandler\ModifyAction</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity\Leaf\ShBlock.cpp">
+      <Filter>Entity\Leaf</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="ShCAD.qrc">
@@ -797,6 +818,12 @@
     </CustomBuild>
     <CustomBuild Include="Interface\ToolBar\ShDimensionToolBar.h">
       <Filter>Interface\ToolBar</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Interface\Dialog\ShCircleParamDialog.h">
+      <Filter>Interface\Dialog</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ActionHandler\DrawAction\ShDrawCircleAction.h">
+      <Filter>ActionHandler\DrawAction</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -1097,9 +1124,6 @@
     <ClInclude Include="Command\ShCommandFlyWeight.h">
       <Filter>Command</Filter>
     </ClInclude>
-    <ClInclude Include="ActionHandler\DrawAction\ShDrawCircleAction.h">
-      <Filter>ActionHandler\DrawAction</Filter>
-    </ClInclude>
     <ClInclude Include="Entity\Leaf\ShCircle.h">
       <Filter>Entity\Leaf</Filter>
     </ClInclude>
@@ -1297,6 +1321,18 @@
     </ClInclude>
     <ClInclude Include="Entity\Private\Algorithm\ShVisitor.h">
       <Filter>Entity\Private\Algorithm</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionHandler\DrawAction\ShDrawEllipseAction.h">
+      <Filter>ActionHandler\DrawAction</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity\Leaf\ShEllipse.h">
+      <Filter>Entity\Leaf</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionHandler\ModifyAction\ShModifyBlockAction.h">
+      <Filter>ActionHandler\ModifyAction</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity\Leaf\ShBlock.h">
+      <Filter>Entity\Leaf</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

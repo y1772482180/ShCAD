@@ -60,7 +60,10 @@ QString ShActionTypeConverter::convert(ActionType actionType) {
 	case ActionType::ActionDrawArcCenterStartLength:
 		text = "_Arc"; break;
 
-
+	case ActionType::ActionDrawEllipseCenterAxis:
+	case ActionType::ActionDrawEllipseAxisEnd:
+		text = "_Ellipse";
+		break;
 
 	case ActionType::ActionModifyMove:
 		text = "_Move"; break;

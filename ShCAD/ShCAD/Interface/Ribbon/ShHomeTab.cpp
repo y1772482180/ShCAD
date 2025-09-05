@@ -56,6 +56,7 @@ ShDrawPanel::ShDrawPanel(ShChain *chain, QWidget *parent, const QString &title, 
 	this->circleButton = new ShRibbonCircleButton(this->layoutWidget);
 	this->arcButton = new ShRibbonArcButton(this->layoutWidget);
 	this->polyButton = new ShRibbonPolyLineButton(this->layoutWidget);
+	this->ellipseButton = new ShRibbonEllipseButton(this->layoutWidget); 
 
 	connect(this->lineButton, &ShButtonWithText::pressed, this, &ShDrawPanel::lineButtonClicked);
 }
@@ -76,7 +77,7 @@ void ShDrawPanel::resizeEvent(QResizeEvent *event) {
 	this->circleButton->setGeometry(width, 0, width, height);
 	this->arcButton->setGeometry(width * 2, 0, width, height);
 	this->polyButton->setGeometry(width * 3, 0, width, height);
-
+	this->ellipseButton->setGeometry(width * 4, 0, width, height);
 }
 
 void ShDrawPanel::lineButtonClicked() {
@@ -133,6 +134,9 @@ ShModifyPanel::ShModifyPanel(ShChain *chain, QWidget *parent, const QString &tit
 	this->offsetButton->setIcon(ShIcon(":/Image/Modify/Offset.png"));
 	this->offsetButton->setText(shGetLanValue_ui("Modify/Offset"));
 
+	this->blockButton = new ShButtonWithText(this->layoutWidget);
+	this->blockButton->setIcon(ShIcon(":/Image/Modify/Block.png"));
+	this->blockButton->setText(shGetLanValue_ui("Modify/Block"));
 
 	connect(this->moveButton, &ShButtonWithText::pressed, this, &ShModifyPanel::moveButtonClicked);
 	connect(this->copyButton, &ShButtonWithText::pressed, this, &ShModifyPanel::copyButtonClicked);
@@ -144,6 +148,8 @@ ShModifyPanel::ShModifyPanel(ShChain *chain, QWidget *parent, const QString &tit
 	connect(this->extendButton, &ShButtonWithText::pressed, this, &ShModifyPanel::extendButtonClicked);
 	connect(this->trimButton, &ShButtonWithText::pressed, this, &ShModifyPanel::trimButtonClicked);
 	connect(this->offsetButton, &ShButtonWithText::pressed, this, &ShModifyPanel::offsetButtonClicked);
+	connect(this->blockButton, &ShButtonWithText::pressed, this, &ShModifyPanel::blockButtonClicked);
+
 }
 
 ShModifyPanel::~ShModifyPanel() {
@@ -156,7 +162,7 @@ void ShModifyPanel::resizeEvent(QResizeEvent *event) {
 	ShPanelInRibbonTab::resizeEvent(event);
 
 	//3row 4column
-	int width = this->layoutWidget->width() / 4;
+	int width = this->layoutWidget->width() / 5;
 	int height = this->layoutWidget->height() / 3;
 
 	this->moveButton->setGeometry(0, 0, width, height);
@@ -172,6 +178,8 @@ void ShModifyPanel::resizeEvent(QResizeEvent *event) {
 	this->trimButton->setGeometry(width * 2, height * 2, width, height);
 
 	this->offsetButton->setGeometry(width * 3, 0, width, height);
+	this->blockButton->setGeometry(width * 4, 0, width, height);
+
 }
 
 
@@ -239,6 +247,12 @@ void ShModifyPanel::trimButtonClicked() {
 void ShModifyPanel::offsetButtonClicked() {
 
 	ShChangeModifyAfterCancelingCurrentStrategy strategy(ActionType::ActionModifyOffset);
+	ShRequestChangeActionHandler request(&strategy);
+	this->request(&request);
+}
+
+void ShModifyPanel::blockButtonClicked() {
+	ShChangeModifyAfterCancelingCurrentStrategy strategy(ActionType::ActionModifyBlock);
 	ShRequestChangeActionHandler request(&strategy);
 	this->request(&request);
 }

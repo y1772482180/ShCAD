@@ -138,6 +138,36 @@ ShDimLinearData& ShDimLinearData::operator=(const ShDimLinearData &other) {
 
 	return *this;
 }
+//////////////////////////////////////////////////////////////////
+
+ShEllipseData::ShEllipseData()
+	: majorRadius(0), minorRadius(0), angle(0) {
+
+}
+
+ShEllipseData::ShEllipseData(const ShPoint3d& center, double majorRadius, double minorRadius, double angle)
+	: center(center), majorRadius(majorRadius), minorRadius(minorRadius), angle(angle) {
+
+}
+
+ShEllipseData::ShEllipseData(const ShEllipseData& other)
+	: center(other.center), majorRadius(other.majorRadius),
+	minorRadius(other.minorRadius), angle(other.angle) {
+
+}
+
+ShEllipseData::~ShEllipseData() {
+
+}
+
+ShEllipseData& ShEllipseData::operator=(const ShEllipseData& other) {
+	this->center = other.center;
+	this->majorRadius = other.majorRadius;
+	this->minorRadius = other.minorRadius;
+	this->angle = other.angle;
+
+	return *this;
+}
 
 //////////////////////////////////////////////////////////////////////////////
 

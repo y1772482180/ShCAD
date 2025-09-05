@@ -30,6 +30,10 @@ ShDrawToolBar::ShDrawToolBar(const QString &title, ShChain *chain, QWidget *pare
 	action->setToolTip("Arc \nCreates an arc using three points");
 	connect(action, &QAction::triggered, this, &ShDrawToolBar::arcActionClicked);
 
+	action = this->addAction(ShIcon(":/Image/Draw/Arc/3Point.png"), "Ellipse");
+	action->setToolTip("Arc \nCreates an arc using three points");
+	connect(action, &QAction::triggered, this, &ShDrawToolBar::arcActionClicked);
+
 	action = this->addAction(ShIcon(":/Image/Draw/Point.png"), "Point");
 	connect(action, &QAction::triggered, this, &ShDrawToolBar::pointActionClicked);
 
@@ -66,7 +70,12 @@ void ShDrawToolBar::circleActionClicked() {
 	ShRequestChangeActionHandler request(&strategy);
 	this->request(&request);
 }
-
+// 新增椭圆按钮点击处理
+void ShDrawToolBar::ellipseActionClicked() {
+	ShChangeActionAfterCancelingCurrentStrategy strategy(ActionType::ActionDrawEllipseCenterAxis);
+	ShRequestChangeActionHandler request(&strategy);
+	this->request(&request);
+}
 void ShDrawToolBar::arcActionClicked() {
 
 	ShChangeActionAfterCancelingCurrentStrategy strategy(ActionType::ActionDrawArcThreePoint);

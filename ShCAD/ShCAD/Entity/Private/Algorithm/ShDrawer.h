@@ -97,6 +97,8 @@ protected:
 	void drawDimDiameterWithoutChild(ShDimDiameter *dimDiameter, const GLColor &color, const QColor &qColor, const GLushort &pattern);
 	void drawDimArcLengthWithoutChild(ShDimArcLength *dimArcLength, const GLColor &color, const QColor &qColor, const GLushort &pattern);
 	void drawDimAngularWithoutChild(ShDimAngular *dimAngular, const GLColor &color, const QColor &qColor, const GLushort &pattern);
+	void drawEllipse(ShEllipse* ellipse, const GLColor& color, const GLushort& pattern);
+	void drawBlock(ShBlock* block, const GLColor& color, const GLushort& pattern);
 
 };
 
@@ -123,6 +125,8 @@ public:
 	virtual void visit(ShDimArcLength *dimArcLength);
 	virtual void visit(ShDimAngular *dimAngular);
 	virtual void visit(ShConstructionLine *constructionLine);
+	virtual void visit(ShEllipse* ellipse);
+	virtual void visit(ShBlock* block);
 
 };
 
@@ -156,7 +160,9 @@ public:
 	virtual void visit(ShDimArcLength *dimArcLength);
 	virtual void visit(ShDimAngular *dimAngular);
 	virtual void visit(ShConstructionLine *constructionLine);
-	
+	virtual void visit(ShEllipse* ellipse);
+	virtual void visit(ShBlock* block);
+
 private:
 	void drawVertex(const QList<ShPoint3d> points);
 };
@@ -182,6 +188,9 @@ public:
 	virtual void visit(ShDimArcLength *dimArcLength);
 	virtual void visit(ShDimAngular *dimAngular);
 	virtual void visit(ShConstructionLine *constructionLine);
+	virtual void visit(ShEllipse* ellipse);
+	virtual void visit(ShBlock* block);
+
 
 };
 
@@ -205,6 +214,8 @@ public:
 	virtual void visit(ShDimArcLength *dimArcLength);
 	virtual void visit(ShDimAngular *dimAngular);
 	virtual void visit(ShConstructionLine *constructionLine);
+	virtual void visit(ShEllipse* ellipse);
+	virtual void visit(ShBlock* block);
 
 };
 

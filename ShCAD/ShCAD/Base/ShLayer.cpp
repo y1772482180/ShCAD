@@ -17,7 +17,7 @@ ShLayer::~ShLayer() {
 }
 
 void ShLayer::add(ShEntity *entity) {
-
+	
 	this->list.append(entity);
 }
 

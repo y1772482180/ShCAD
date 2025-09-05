@@ -17,6 +17,8 @@ class ShDimDiameter;
 class ShDimArcLength;
 class ShDimAngular;
 class ShConstructionLine;
+class ShEllipse;
+class ShBlock;  // 新增块类的前向声明
 
 class ShVisitor {
 
@@ -37,7 +39,8 @@ public:
 	virtual void visit(ShDimArcLength *dimArcLength) {}
 	virtual void visit(ShDimAngular *dimAngular) {}
 	virtual void visit(ShConstructionLine *constructionLine) {}
-
+	virtual void visit(ShEllipse* ellipse) {}
+	virtual void visit(ShBlock* block) {}  // 新增块访问方法
 
 };
 

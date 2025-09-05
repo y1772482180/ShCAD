@@ -13,6 +13,7 @@ class ShPropertyPanel;
 class ShLayerPanel;
 class ShButton;
 class ShRibbonCircleButton;
+class ShRibbonEllipseButton;
 class ShRibbonArcButton;
 class ShRibbonPolyLineButton;
 class ShButtonWithText;
@@ -51,7 +52,7 @@ private:
 	ShRibbonCircleButton *circleButton;
 	ShRibbonArcButton *arcButton;
 	ShRibbonPolyLineButton *polyButton;
-
+	ShRibbonEllipseButton* ellipseButton;  
 public:
 	ShDrawPanel(ShChain *chain, QWidget *parent, const QString &title, int width);
 	~ShDrawPanel();
@@ -83,6 +84,7 @@ private:
 	ShButtonWithText *trimButton;
 
 	ShButtonWithText *offsetButton;
+	ShButtonWithText* blockButton;  // 新增块按钮
 
 public:
 	ShModifyPanel(ShChain *chain, QWidget *parent, const QString &title, int width);
@@ -102,6 +104,7 @@ protected:
 	void extendButtonClicked();
 	void trimButtonClicked();
 	void offsetButtonClicked();
+	void blockButtonClicked();  // 新增块按钮点击处理
 
 };
 

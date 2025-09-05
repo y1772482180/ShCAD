@@ -19,6 +19,7 @@ private:
 	void circleActionClicked();
 	void arcActionClicked();
 	void pointActionClicked();
+	void ellipseActionClicked();
 };
 
 #endif //_SHDRAWTOOLBAR_H

@@ -66,7 +66,28 @@ public:
 	virtual QString getToolTip();
 	static ShIcon getIcon_();
 };
+////////////////////////////////////////////////////////////////////////
+class ShRibbonEllipseButtonCenterAxisStrategy : public ShRibbonButtonStrategy {
+public:
+	ShRibbonEllipseButtonCenterAxisStrategy();
+	~ShRibbonEllipseButtonCenterAxisStrategy();
 
+	virtual void execute();
+	virtual ShIcon getIcon();
+	virtual QString getToolTip();
+	static ShIcon getIcon_();
+};
+
+class ShRibbonEllipseButtonAxisEndStrategy : public ShRibbonButtonStrategy {
+public:
+	ShRibbonEllipseButtonAxisEndStrategy();
+	~ShRibbonEllipseButtonAxisEndStrategy();
+
+	virtual void execute();
+	virtual ShIcon getIcon();
+	virtual QString getToolTip();
+	static ShIcon getIcon_();
+};
 ////////////////////////////////////////////////////////////////////////
 
 class ShRibbonArcButtonThreePointStrategy : public ShRibbonButtonStrategy {
